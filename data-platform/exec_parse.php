@@ -22,6 +22,8 @@ $cls = new data_analytics($g_db);
 $cls->init_params(BASEPATH.'input/hy.csv', 'hy');
 $cls->init_params(BASEPATH.'input/js.csv', 'js');
 
-//$cls->set_output_file(BASEPATH."output/out_{$offset}_{$limit}.sql");
+file_put_contents(BASEPATH."output/".date("Y-m-d").".log","START: {$offset} - {$limit} ".date("Y-m-d H:i:s")."\n",FILE_APPEND);
 
 $cls->parse($offset, $limit, G_TIME_LIMIT);
+
+file_put_contents(BASEPATH."output/".date("Y-m-d").".log","END  : {$offset} - {$limit} ".date("Y-m-d H:i:s")."\n",FILE_APPEND);

@@ -1,0 +1,7 @@
+input keywords and tags folder
+csv files(UTF8 encoding)
+
+Format:
+
+MAINTAG,relate keywords,relate keywords,...,relate keywords
+MAINTAG,relate keywords,relate keywords,...,relate keywords
