@@ -1,5 +1,8 @@
 <?php
 
+include BASEPATH.'lib/IP.class.php';
+
+
 class data_analytics {
 	
 	private $_map_hy = array();
@@ -178,16 +181,36 @@ class data_analytics {
 				$time = $row['time'];
 			}
 			
-			$update_sql = " UPDATE ignore eef_platform_auto_business_edm SET ".
-					      " hy = '".addslashes(implode(",", $new_hy))."' , ".
-					      " js = '".addslashes(implode(",", $new_js))."' , ".
-					      " domain = '".addslashes(implode(",", $new_domain))."' , ".
-					      " ip = '".addslashes( $new_ip)."',  ".
-					      " time = {$time} ".
-					      " WHERE uid = {$uid};";
 			
+			$location = IP::find($new_ip);
 			
+			//IP exist(location found) , update database
+			if (is_array($location)){
+				$country = $location[0];
+				$province = $location[1];
+				$city = $location[2];
+				$update_sql = " UPDATE ignore eef_platform_auto_business_edm SET ".
+						" hy = '".addslashes(implode(",", $new_hy))."' , ".
+						" js = '".addslashes(implode(",", $new_js))."' , ".
+						" domain = '".addslashes(implode(",", $new_domain))."' , ".
+						" ip = '".addslashes( $new_ip)."',  ".
+						" visit_country = '".addslashes($country)."', ".
+						" visit_province = '".addslashes($province)."', ".
+						" visit_city = '".addslashes($city)."', ".
+						" time = {$time} ".
+						" WHERE uid = {$uid};";
+			}else{
+			//location not found, do nothing, previous location(city) remain.
+				$update_sql = " UPDATE ignore eef_platform_auto_business_edm SET ".
+						" hy = '".addslashes(implode(",", $new_hy))."' , ".
+						" js = '".addslashes(implode(",", $new_js))."' , ".
+						" domain = '".addslashes(implode(",", $new_domain))."' , ".
+						" ip = '".addslashes( $new_ip)."',  ".
+						" time = {$time} ".
+						" WHERE uid = {$uid};";
+			}
 			
+//			echo $update_sql."\n";
 // 			if ($file === true){
 // 				file_put_contents($this->_output_file, $update_sql."\n", FILE_APPEND);
 // 			}else{
@@ -198,10 +221,4 @@ class data_analytics {
 	}
 }
 
-function filter_no_empty($v){
-	if (empty($v)){
-		return false;
-	}
-	return true;
-}
 	
