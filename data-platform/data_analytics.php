@@ -94,7 +94,7 @@ class data_analytics {
 		 $map['www.infineonic.org'] =array("控制器/处理器/DSP");
 		 $map['atmel.eefocus.com'] =array("控制器/处理器/DSP");
 		 $map['www.freescaleic.org'] =array("控制器/处理器/DSP");
-		 $map['www.stmuc.org'] =array("控制器/处理器/DSP");
+		 $map['www.stmcu.org'] =array("控制器/处理器/DSP");
 		 $map['mcu.eefocus.com'] =array("控制器/处理器/DSP");
 		 $map['openhw.eefocus.com'] =array("数字/可编程逻辑");
 		 $map['tm.eefocus.com'] =array("测试测量");
