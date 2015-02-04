@@ -6,7 +6,7 @@ date_default_timezone_set('Asia/ShangHai');
 $dbConfig = array(
     'host'     => '192.168.2.82',
     'port'     => 3306,
-    'dbname'   => 'newsletter',
+    'dbname'   => 'center_eefocus',
     'username' => 'wyx',
     'password' => 'yunxiang'
 );
@@ -30,13 +30,13 @@ function _updateUserTagsByEmail($email, $tags_hy, $tags_js) {
     $sql = sprintf("SELECT `id`,`email`,`hy`,`js` FROM `eef_platform_auto_business_edm` WHERE `email` = '%s' LIMIT 1", $email);
     $query = $DB->query($sql);
     if ($rs = $query->fetch(PDO::FETCH_ASSOC)) {
-        if ($rs['tags_hy']) {
-            $tags_hy = $tags_hy . ',' . trim($rs['tags_hy'], ',');
+        if ($rs['hy']) {
+            $tags_hy = $tags_hy . ',' . trim($rs['hy'], ',');
             $tags_hy = explode(',', trim($tags_hy, ','));
             $tags_hy = implode(',', array_unique($tags_hy));
         }
-        if ($rs['tags_js']) {
-            $tags_js = $tags_js . ',' . trim($rs['tags_js'], ',');
+        if ($rs['js']) {
+            $tags_js = $tags_js . ',' . trim($rs['js'], ',');
             $tags_js = explode(',', trim($tags_js, ','));
             $tags_js = implode(',', array_unique($tags_js));
         }
