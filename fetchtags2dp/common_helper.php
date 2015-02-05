@@ -169,16 +169,50 @@ function get_link_tags($link) {
     return $tags;
 }
 
+// init tags map
+function _init_tags_map() {
+    $tags_map = array();
+    foreach (array('hy', 'js') as $type) {
+        $file = __DIR__ . '/' . $type . '.csv';
+        $fp = fopen($file, "r");
+
+        $map = array();
+        while (!feof($fp)){
+            $data = fgetcsv($fp);
+
+            if (empty($data)){
+                continue;
+            }
+
+            foreach ($data as $k => $v){
+                $v = strtoupper(trim($v));
+                if (empty($data[0]) || empty($v)){
+                    break;
+                }
+                $map[$v] = $data[0];
+            }
+        }
+        fclose($fp);
+        $tags_map[$type] = $map;
+    }
+
+    return $tags_map;
+}
+
 function _filter_tags($tag_str, $type = 'hy') {
-    global $_config;
+    static $tags_map = null;
+    if (is_null($tags_map)) {
+        $tags_map = _init_tags_map();
+    }
 
     $tags = array();
-    $map  = isset($_config['tags_map_' . $type]) ? $_config['tags_map_' . $type] : array();
+    $map  = isset($tags_map[$type]) ? $tags_map[$type] : array();
     if ($tag_str && $map) {
-        foreach ($map as $v) {
-            if (stripos($tag_str, $v) !== false)    $tags[] = $v;
+        foreach ($map as $k=>$v) {
+            if (stripos($tag_str, $k) !== false)    $tags[] = $v;
         }
     }
+
     return $tags ? implode(',', array_unique($tags)) : '';
 }
 
