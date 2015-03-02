@@ -11,14 +11,14 @@
 ## 操作步骤
 ### 一、线下数据收集
 1. 从线上导入newsletter数据库倒出 newsletter_task, newsletter_user 表到开发环境 2.82（可增量导入）
-2. 导入目录下db.sql 至 newsletter （tmp_link_tags,tmp_user_tags）
+2. 导入目录下db.sql 至 newsletter （tmp_link_tags,tmp_user_tags），若已存在，清空数据
 3. 修改config.php中db与mongo部分
    - mongo为与非网日志统计系统（http://stat.local.eefocus.com/）对应库
    - 因此mongodb数据较大，且只存在线上，前面步骤只可在公司环境执行
 4. 执行1fetchtags.php
 ```
 # 末尾两位参数为日志分析起至日期
-php5 1fetchtags.php 2014-10-01 2014-01-01
+php5 1fetchtags.php 2014-10-01 2015-01-01
 ```
 
 ### 二、线上数据回灌
