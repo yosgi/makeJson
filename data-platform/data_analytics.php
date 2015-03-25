@@ -67,11 +67,11 @@ class data_analytics {
 		/*	
 									技术类别
 			ams社区	ams.eefocus.com		传感/MEMS		
-			飞兆技术社区	www.fairchildic.org		电源/电器管理		
+			飞兆技术社区	www.fairchildic.org		电源/电池管理		
 			LED社区	ledlight.eefocus.com		光电/显示		
-			美信技术中心	maximmini.eefocus.com		电源/电器管理		
-			凌力尔特技术社区	linear.eefocus.com		RF/微波，电源/电器管理		
-			模拟与电源技术社区	analog.eefocus.com		电源/电器管理		
+			美信技术中心	maximmini.eefocus.com		电源/电池管理		
+			凌力尔特技术社区	linear.eefocus.com		RF/微波，电源/电池管理		
+			模拟与电源技术社区	analog.eefocus.com		电源/电池管理		
 			射频微波技术社区	rf.eefocus.com		RF/微波		
 			英飞凌技术社区	www.infineonic.org		控制器/处理器/DSP		
 			Atmel技术社区	atmel.eefocus.com		控制器/处理器/DSP		
@@ -85,11 +85,11 @@ class data_analytics {
 		 
 		 $map = array();
 		 $map['ams.eefocus.com'] =array("传感/MEMS");
-		 $map['www.fairchildic.org'] =array("电源/电器管理");
+		 $map['www.fairchildic.org'] =array("电源/电池管理");
 		 $map['ledlight.eefocus.com'] =array("光电/显示");
-		 $map['maximmini.eefocus.com'] =array("电源/电器管理");
-		 $map['linear.eefocus.com'] =array("RF/微波","电源/电器管理");
-		 $map['analog.eefocus.com'] =array("电源/电器管理");
+		 $map['maximmini.eefocus.com'] =array("电源/电池管理");
+		 $map['linear.eefocus.com'] =array("RF/微波","电源/电池管理");
+		 $map['analog.eefocus.com'] =array("电源/电池管理");
 		 $map['rf.eefocus.com'] =array("RF/微波");
 		 $map['www.infineonic.org'] =array("控制器/处理器/DSP");
 		 $map['atmel.eefocus.com'] =array("控制器/处理器/DSP");
@@ -153,6 +153,28 @@ class data_analytics {
 		}else{
 			return array();
 		}
+	}
+
+	private function _removeHYOldKey($data){
+		$filter = array("航空、航海、军工电子","能源新能源");
+
+		foreach ($data as $k=>$v){
+			if (in_array($v,$filter)){
+				unset($data[$k]);
+			}
+		}
+		return $data;
+	}
+
+	private function _removeJSOldKey($data){
+		$filter = array("电源/电器管理");
+
+		foreach ($data as $k=>$v){
+			if (in_array($v,$filter)){
+				unset($data[$k]);
+			}
+		}
+		return $data;
 	}
 	/**
 	 * db key :
@@ -231,9 +253,9 @@ class data_analytics {
 			$new_js = array_unique(array_merge($origin_js,$js_tags));
 			$new_js = array_filter($new_js);
 			
+			$new_js = $this->_removeJSOldKey($new_js);
+			$new_hy = $this->_removeHYOldKey($new_hy);
 			
-			
-
 			$origin_domain = explode(",",$user_data['domain']);
 			
 			$origin_domain[] = $domain;
