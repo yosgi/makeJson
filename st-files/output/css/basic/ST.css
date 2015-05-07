@@ -1,0 +1,65 @@
+body {width:946px;margin:0 auto;font-size:12px;font-family:Tahoma,SimSun,Verdana,Arial;color: #333;background: url(../../images/body_bg.gif) repeat-x #F2FAFE;}
+html,body {height: 100%;}
+A {text-decoration:none;color: #333;}
+A:hover {text-decoration:underline;color: #333;}
+h1,h2,h3,h4,h5,h6,p,span,b,form,img,div,form{margin:0;padding:0;}
+img{border:0;}
+/*文字*/
+.blue,.blue a:link,.blue a:visited,.blue a:hover,.blue a:active {color:#1481BC;}
+.white,.white a:link,.white a:visited,.white a:hover,.white a:active {color:#fff;}
+.gry80,.gry80 a:link,.gry80 a:visited,.gry80 a:hover,.gry80 a:active {color:#808080;} 
+.red,.red a:link,.red a:visited,.red a:hover,.red a:active {color:#f00;}
+.txt_line,.txt_line a:link,.txt_line a:visited,.txt_line a:hover,.txt_line a:active{text-decoration: underline;}
+.f12{ font-size:12px;}
+.fl{ float:left;}
+.fr{ float:right;}
+.fn{ font-weight:normal;}
+.pr8{ padding-right:8px;}
+.l18{ line-height:18px;}
+.l24{ line-height:24px;}
+.mt8{ margin-top:8px;}
+.clr{ height:1px; overflow:hidden; clear:both;}
+/*头部*/
+.header{ margin:0 auto; width:946px; height:76px;background: url(../../images/header_bg.jpg) no-repeat;}
+#SearchForm{ float:right; padding-top:40px;}
+
+/*footer*/
+.footer{ border-top:1px solid #A2D4EB; line-height:24px; text-align:center; padding:10px 0 0 0; overflow:hidden; margin:0 auto; width:946px;}
+.footer,.footer a:link,.footer a:visited,.footer a:hover,.footer a:active {color:#666;} 
+
+.clearfix {
+    *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    line-height: 0;
+    content: "";
+}
+.clearfix:after {
+    clear: both;
+}
+.link-more {
+    margin-bottom: 10px;
+    padding-left: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #0093dd;
+    line-height: 23px;
+    height: 23px;
+}
+.nav-st {
+    padding-bottom: 20px;
+    height: 94px;
+    background: url(../../images/nav-bg.jpg) no-repeat 0 0;
+}
+.nav-st a {
+    float: left;
+    padding-left: 9px;
+    width: 182px;
+    height: 94px;
+}
+.nav-st a.first {
+    padding-left: 0;
+}

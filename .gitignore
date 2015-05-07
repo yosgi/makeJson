@@ -2,3 +2,7 @@
 *.project
 *.prefs
 *.log
+st-files/output/*
+!st-files/output/images
+!st-files/output/js
+!st-files/output/css

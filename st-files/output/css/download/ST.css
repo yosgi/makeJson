@@ -1,0 +1,290 @@
+﻿a.txtline {text-decoration:none;}
+a.txtline:hover {text-decoration:none;}
+/* 下载分类 */
+.sort ul {width:280px; list-style:none; line-height:24px;}
+.sort li {background:url(../../images/dot_sort.gif) no-repeat left 9px; padding:0 0 0 15px; color:#7c7c7c;}
+.sort li a {margin:0 5px 0 0;}
+
+/* 下载列表 */
+.show ul {width:618px; margin:0 10px; padding:0 0 10px 0; list-style:none;}
+.show ul li {width:603px; margin:5px 0 0 0; padding:0 0 5px 15px; background:url(../../images/dot.gif) no-repeat 5px 11px; border-bottom:1px dotted #ccc; overflow:hidden;}
+
+.show_tit {width:600px; margin:10px; padding:0 0 0 18px; font-size:14px; font-weight:bold; background:url(../../images/dot_project.gif) no-repeat 0 7px;}
+.show p {width:600px; margin:10px 10px 10px 28px;}
+.show p a {margin:0 10px;}
+.show p img {margin:0 0 0 10px;}
+
+
+/*页面第一屏*/
+.one {width: 946px;margin:8px auto; }
+.one_r {float:left;width: 240px;}
+.r_box {float:left;width: 240px;margin:0 0 5px 0;padding: 0;}
+.r_box_t {background:#0093DD; height:21px; line-height:21px; text-indent:8px; margin:0; padding:0; color:#fff; width:240px; font-weight:bold;}
+.r_box_b {margin:1px 0 0 0; padding:8px; list-style-type: none;width:224px; overflow:hidden;background:#EFEFEF;}
+.r_box_b dl {float: left;width: 224px;margin: 3px 0 0 0;padding: 0;}
+.r_box_b dl ul{ margin:0 0 0 5px; padding:0; list-style-type:none;}
+.r_box_b dl ul li{background: url(../../images/arrow.gif) no-repeat left 8px;padding: 0 0 0 10px; line-height:20px;}
+.r_box_b dl ul li ul ol{ background:url(../../images/dot.gif) no-repeat 0 10px; padding: 0 8px 0 15px; margin:0;}
+.r_box_b dd {background:url(../../images/dot_sort.gif) no-repeat 8px 10px;line-height:24px;padding:0 0 6px 22px; margin:0; font-size:14px;}
+.one_title {font-size: 14px;font-weight: bold;color: #FFF;float: left;margin:0;padding:0 10px;background:#0093dd;border-right:1px solid #fff;}
+.one_l {width:700px; float:right;}
+.data_menu {
+    width:635px;
+	margin:0 10px 10px 10px;
+	padding:0;
+	line-height:25px;
+}
+.data_menu b {
+	display:block;
+    font-size:14px;
+}
+.data_menu a {
+    color:#0093dd;
+}
+.data_menu a:link {
+    color:#0093dd;
+	text-decoration:none;
+}
+.data_menu a:visited {
+    color:#0093dd;
+	text-decoration:none;
+}
+.data_menu a:hover {
+    color:#0065e6;
+	text-decoration:underline;
+	cursor:pointer;
+}
+.data_menu a:active {
+    color:#0065e6;
+	text-decoration:underline;
+}
+.data_menu span {
+    color:#ccc;
+	margin:0 5px 0 6px;
+	padding:0;
+}
+.data_more {
+    float:right;
+	margin:0 10px 10px 0;
+	padding:0;
+    font-weight:bold;
+	color:#d7780a;
+}
+
+.data_tit { overflow:hidden;
+    width:700px;
+	margin:0 10px;
+	padding:0;
+	line-height:25px;
+	background:#0b7efd;
+	border:1px solid #fff;
+	border-top:none;
+	border-left:none;
+	text-indent:10px;
+}
+
+table.data_con {
+    width:700px;
+	margin:0 10px 10px 0;
+	padding:0;
+}
+table.data_con th {
+	background:#99C9FF;
+	border:1px solid #fff;
+	border-top:none;
+	border-left:none;
+	font-weight:normal;
+	margin:0;
+	padding:5px 0 5px 10px;
+}
+table.data_con th.noline { border-right-style:none; border-bottom:1px solid #fff;}
+table.data_con td {
+    line-height:21px;
+	margin:0;
+	padding:5px 10px;
+	border:1px solid #fff;
+	border-top:none;
+	border-left:none;
+}
+table.data_con td.noline { border-right-style:none; border-bottom:1px solid #fff;}
+tr.blue1 {
+    background:#eee;
+}
+tr.blue2 {
+    background:#cbe5ff;
+}
+
+/* ST-MCU方案荟萃 */
+.program-main {
+    margin: 0 auto;
+    width: 946px;
+}
+.program-content {
+    float: left;
+    width: 758px;
+}
+.program-sidebar {
+    float: right;
+    width: 180px;
+}
+.program-content-header {
+    height: 25px;
+    overflow: hidden;
+    background: url(../../images/program-content-header-bg.jpg) no-repeat;
+}
+.program-content-header-breadcrumb {
+    float: left;
+    padding-left: 11px;
+    line-height: 24px;
+    font-size: 12px;
+}
+.program-content-home-link {
+    display: inline-block;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    margin-right: 12px;
+}
+.program-content-header a,
+.program-content-header a:hover {
+    color: #0255b1;
+}
+.program-content-header-form {
+    float: right;
+}
+.program-content-body {
+    margin: 1px 0 8px;
+    border: 1px solid #a2d4eb;
+    padding: 7px 11px 2px;
+}
+.program-content-item {
+    margin-bottom: 15px;
+}
+.program-content-item table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    color: #000;
+}
+.program-content-item table td {
+    background-color: #eee;    
+}
+.program-content-item table th {
+    font-weight: normal;
+}
+.text-left {
+    text-align: left;
+}
+.program-content-item th,
+.program-content-item td {
+    padding: 0;    
+}
+.program-content-item .text-left {
+    padding-left: 15px;
+}
+.th-level1 {
+    color: #fff;
+    background-color: #0b7efd;
+    height: 35px;
+}
+.th-level2 {
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    background-color: #99c9ff;
+    width: 88px;
+    height: 24px;
+}
+.table-level2 td {
+    border-right: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    width: 88px;
+    height: 25px;    
+}
+.tr-last td {
+    border-bottom: 0;
+    color: #666;
+}
+.table-level2 {
+    width: 100%;
+    height: 103px;
+}
+.table-level2 td.text-left {
+    width: 532px;
+    height: 25px;
+}
+.program-content-item a,
+.program-content-item a:hover {
+    color: #1481bc;
+    margin-right: 8px;
+}
+.program-content-item-img img {
+    border: 1px solid #fff;
+}
+.program-content-footer {
+    margin-bottom: 8px;
+}
+.program-content-footer-pagination {
+    text-align: center;
+    height: 18px;
+    overflow: hidden;
+}
+.program-content-footer-pagination a {
+    display: inline-block;
+    background-color: #fff;
+    border: 1px solid #84bceb;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Arial;
+    color: #3a93df;
+    line-height: 15px;
+    height: 15px;
+    padding: 0 5px;
+    margin-right: 6px;
+}
+.program-content-footer-pagination a:hover {
+    text-decoration: none;
+    color: #3a93df;
+    /*color: #fff;
+    background-color: #217ccb;*/
+}
+.program-content-footer-pagination .font-normal {
+    font-weight: normal;
+}
+.program-content-footer-pagination .current,
+.program-content-footer-pagination .current:hover {
+    color: #fff;
+    background-color: #217ccb;
+}
+.program-sidebar-block-header {
+    height: 21px;
+    line-height: 21px;
+    padding-left: 7px;
+    background-color: #0093dd;
+    color: #f2fafe;
+    font-weight: bold;
+}
+.program-sidebar-block-body {    
+    margin: 1px 0 8px;
+    border: 1px solid #a2d4eb;
+    padding: 7px;
+    background-color: #fff;
+}
+.program-sidebar-block-body ul,
+.program-sidebar-block-body li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.program-sidebar-block-body ul {
+    margin-left: 4px;
+}
+.program-sidebar-block-body-video ul {
+    margin-left: 10px;
+}
+.program-block-list li {
+    background: url(../../images/arrow.gif) no-repeat scroll left 9px transparent;
+    line-height: 23px;
+    padding-left: 10px;
+}
+.program-sidebar-block-body-ad {
+    text-align: center;
+}
