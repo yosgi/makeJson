@@ -1,6 +1,6 @@
 <?php
 
- function get_dir_dirs($dir_path,$only_name = true){
+ function get_dir_dirs($dir_path,$only_name = true,$needchangecode = false){
  	$dir_path = rtrim($dir_path,'\/');
  	
  	if (!is_dir($dir_path)){
@@ -12,6 +12,9 @@
  	$result = array();
  	
  	while (($file = readdir($t_dir)) !== false){
+ 		if ($needchangecode){
+ 			$file = iconv("GBK", "UTF-8", $file);
+ 		}
  		if ($file != '.' && $file != '..'){
  			if (is_dir($dir_path.'/'.$file)){
  				if ($only_name){
@@ -28,7 +31,7 @@
  }
 
 
- function get_dir_files($dir_path,$only_name = true){
+ function get_dir_files($dir_path,$only_name = true, $needchangecode = false){
  	
  	$dir_path = rtrim($dir_path,'\/');
  	
@@ -39,8 +42,12 @@
 	$t_dir = opendir($dir_path);
 
 	$result = array();
-	
+
 	while (($file = readdir($t_dir)) !== false){
+		if ($needchangecode){
+ 			$file = iconv("GBK", "UTF-8", $file);
+ 		}
+
 		if ($file != '.' && $file != '..'){
 			 if (!is_dir($dir_path.'/'.$file)){
 			 	 if ($only_name){

@@ -16,6 +16,8 @@ $g_docs = new stdoc($g_db_community,$g_db_comm);
 $g_parser = new Parser();
 
 $g_maps = array();
+$g_samefiles = array();
+
 if (file_exists(BASEPATH.'input/outlink.csv')){
 	$csvfile = file_get_contents(BASEPATH.'input/outlink.csv');
 	$lines = explode("\n",$csvfile);
@@ -25,7 +27,19 @@ if (file_exists(BASEPATH.'input/outlink.csv')){
 			$g_maps[$dt[0]] = trim($dt[2]).".zip";
 		}
 	}
+}else{
+	echo "miss outlinks";
 }
+
+if (file_exists(BASEPATH."input/samefiles")){
+	$ct = file_get_contents(BASEPATH."input/samefiles");
+	$g_samefiles =  unserialize($ct);
+	file_put_contents(BASEPATH.'output/missfiles', "");
+}else{
+	echo "miss samefiles";
+}
+
+
 
 gen_homepage();
 //gen_categories(1);
@@ -41,6 +55,27 @@ function gen_homepage(){
 	$dispdata['c1'] = $dispdata['c2'] = 0;
 	$view = $g_parser->view('main.php',$dispdata,TRUE);
 	file_put_contents(BASEPATH.'output/home.html', $view);
+}
+
+function change_fileurl($fileurl){
+	global $g_samefiles;
+
+	$files = $g_samefiles;
+
+	$file_base = "K:/files/"; //where save files 
+	$key = $file_base.$fileurl;
+	if (isset($files[$key])){
+		$newpath = str_replace($file_base, "", $files[$key]['change2']);
+	}else{
+		$newpath = $fileurl;
+	}
+
+	$ss = iconv("UTF-8","GBK",$newpath);
+
+	if( preg_match("/^file/",$newpath) &&  !file_exists($file_base.$ss)){
+		file_put_contents(BASEPATH.'output/missfiles', $file_base.$newpath."\n", FILE_APPEND);
+	}
+	return $newpath;
 }
 
 function find_filename($link){
@@ -110,6 +145,10 @@ function _deal_files(&$files,$flag,$category){
 					$vvv['fileurl'] = $vvv['link'];
 					$vvv['ico'] = 'link.gif';
 				}
+			}
+
+			if ($flag == 2){
+				$vvv['fileurl'] = change_fileurl($vvv['fileurl']);
 			}
 		}
 }
