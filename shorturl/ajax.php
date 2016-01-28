@@ -159,7 +159,7 @@ class Ajax {
 		}
 
 		if(!empty($urls)){
-			$urls = preg_replace("/\r|\n/","$",$urls);
+			$urls = preg_replace("/\r|\n/","$",$urls)."$";
 		}
 
 		$fp = new SplFileObject("compress.zlib://".$file_path,"r");
