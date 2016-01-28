@@ -125,20 +125,27 @@ class Ajax {
 
 		for($i = 0;$i< $days;$i++){
 			$time = $bt + $i*24*3600;
-			$file_path = $g_log_dir."url.eefocus.com.".date("Ymd",$time).".log";
+			$file_path = $g_log_dir."url.eefocus.com.".date("Ymd",$time).".log.gz";
 			if(!file_exists($file_path)){
 				$ret['message'] = 'miss log '.$file_path;
 				echo json_encode($ret); exit;
 			}
 			$this->_parse($file_path,$urls,$data);
 		}
-print_r($data);exit;
-		$fp = new SplFileObject('cache/data.csv',"w");
 
-		$fp->fputcsv(array('URL','click',"From:{$date}  $days days"));
+		$fp = new SplFileObject('cache/data.csv',"w");
+		$fp->fputcsv(array("From:{$date}  $days days"));
+		$fp->fputcsv(array('URL','Time',"IP",'Referer','User Agent'));
 		foreach($data as $kk=>$vv){
-			
-			$fp->fputcsv(array($kk,$vv));
+			//$fp->fputcsv(array($kk,count($vv)));
+			foreach($vv as $vvv){
+				$fp->fputcsv(array($kk,
+					$vvv['time'],
+					$vvv['ip'],
+					$vvv['referer'],
+					$vvv['ua']
+					));
+			}
 		}
 		$ret['result'] = 'download.php'; //use relative path
 		$ret['code'] = 0;
@@ -155,7 +162,7 @@ print_r($data);exit;
 			$urls = preg_replace("/\r|\n/","$",$urls);
 		}
 
-		$fp = new SplFileObject($file_path,"r");
+		$fp = new SplFileObject("compress.zlib://".$file_path,"r");
 		while(!$fp->eof()){
 			$data = $fp->fgetcsv(" ");
 
@@ -164,18 +171,6 @@ print_r($data);exit;
 			}
 
 			$data[4] = strtotime(preg_replace("/^\[(.*?)\/(.*?)\/(.*?):(.*?)$/","$3-$2-$1 $4",$data[3]));
-		
-			if(!is_scalar($data[10])){
-				$key = 'other';
-			}else{
-				if(strpos($data[10],",") !== FALSE){
-					$keys = explode(",", $data[10]);
-					$key = trim($keys[0]);
-					unset($keys);
-				}else{
-					$key = trim($data[10]);
-				}
-			}
 			
 			// $new = array();
 			preg_match("/^(.*?) (\/.*?) (.*?)$/",$data[5],$matches);
@@ -185,7 +180,7 @@ print_r($data);exit;
 			$filter_url = substr($filter_url,1);
 			unset($matches);
 
-			if(preg_match("/^\/([a-zA-Z0-9]+)$/",$url) || preg_match("/^\/[a-zA-Z0-9]+\?[a-zA-Z0-9]+$/",$url)){
+			if((preg_match("/^\/([a-zA-Z0-9]+)$/",$url) || preg_match("/^\/[a-zA-Z0-9]+\?[a-zA-Z0-9]+$/",$url))&& $data[6] == 301){
 				
 				if(!empty($urls)){
 					//not in filter urls,ignore
@@ -195,7 +190,7 @@ print_r($data);exit;
 				}
 
 				if(!is_scalar($data[10])){
-					$ip = 'other';
+					$ip = 'unknown';
 				}else{
 					if(strpos($data[10],",") !== FALSE){
 						$keys = explode(",", $data[10]);
@@ -209,14 +204,18 @@ print_r($data);exit;
 				if($this->_dofilter($ip,$data[8],$data[9]) === FALSE){
 					continue;
 				}; //ip, referer, ua
-				
-				if(isset($new_data[$url])){
-					$new_data[$url] ++;
-				}else{
-					$new_data[$url] = 1;
-				}
-				
 
+				$row = array();
+				$row['referer'] = $data[8];
+				$row['ua'] = $data[9];
+				$row['time'] = date('Y/m/d H:i:s',$data[4]);
+				$row['ip'] = $ip;
+				
+				if(!isset($new_data[$url])){
+					$new_data[$url] = array();
+				}
+				$new_data[$url][] = $row;
+				
 			}else{
 				//not in normal short url ignore
 				continue;
@@ -227,6 +226,10 @@ print_r($data);exit;
 
 	private function _dofilter($ip,$referer,$ua){
 		global $g_filters;
+
+		if($ip == 'unknown'){
+			return TRUE;
+		}
 
 		foreach($g_filters as $f){
 			if(!empty($f['ip1']) && !empty($f['ip2']) && !empty($f['ua'])){
