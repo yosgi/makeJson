@@ -2,7 +2,7 @@
 
 class eef_edm_log {
 	
-	static public $RMOTE_LOG_URL = "http://stat.local.eefocus.com/search/ajax.html?func=HTableEdm&domain=analytics.eefocus.com&start_time=%s&end_time=%s";
+	static public $RMOTE_LOG_URL = "http://stat.local.eefocus.com:8010/search/ajax.html?func=HTableEdm&domain=analytics.eefocus.com&start_time=%s&end_time=%s";
 	
 	private $_db = null;
 
@@ -41,6 +41,9 @@ class eef_edm_log {
 				glog('ERROR',$e->getMessage());
 				return FALSE;
 			}
+		}else{
+			glog('WARNING','stat.local.eefocus.com empty '.$day);
+			return FALSE;
 		}
 		glog('INFO','complete eef_edm_log import '.$day);
 		return TRUE;
@@ -125,8 +128,10 @@ class eef_edm_log {
 		$uids = array();
 		$sqls = array();
 		foreach($data as $k=>$v){
+			if(empty($v['uid'])) continue;
 			$limit ++;
 			$updatedata[$v['uid']] = $v;
+
 			$uids[] = $v['uid'];
 			if($limit == 100){
 				$email_users = $this->_get_email_users($uids);

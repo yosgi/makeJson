@@ -124,6 +124,7 @@ class sendy_edm_log {
 		$uids = array();
 		$sqls = array();
 		foreach($data as $k=>$v){
+			if(empty($v['uid'])) continue;
 			$limit ++;
 			$updatedata[$v['uid']] = $v;
 			$uids[] = $v['uid'];
