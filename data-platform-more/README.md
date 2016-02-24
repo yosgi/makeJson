@@ -30,13 +30,17 @@
 
    可以并行处理多天 ，定时脚本每天一次就可以
    例如：
-       !/bin/bash
-       php import.php.php 2016-02-01 0 &
-
+   
+   ````
+   !/bin/bash
+   php import.php.php 2016-02-01 0 &
+   ````
     php batch_import.php {DATE} {DATE2} {EXPORT} 
 
    {DATE}: 2016-02-01  开始处理某天的edm数据
+   
    {DATE2}: 2016-02-20 结束处理某天的edm数据
+   
    {EXPORT}: 0 : 全部直接执行SQL  1: 导入执行SQL,累加open,click导出SQL 2：全部导出处理
 
    日志在{ROOT}/output/下
