@@ -126,8 +126,10 @@ class sendy_edm_log {
 		foreach($data as $k=>$v){
 			if(empty($v['uid'])) continue;
 			$limit ++;
-			$updatedata[$v['uid']] = $v;
-			$uids[] = $v['uid'];
+			$updatedata[] = $v;
+			if (!in_array($v['uid'], $uids)) {
+				$uids[] = $v['uid'];
+			}
 			if($limit == 100){
 				$email_users = $this->_get_email_users($uids);
 				if($export == TRUE){
@@ -223,16 +225,17 @@ class sendy_edm_log {
 		$sqls = array();
 		$click_count = array();
 		foreach($rawdatas as $key=>$row){
-			if(isset($email_users[$key])){
-				$row['eefocus_uid'] = empty($email_users[$key]['eefocus'])?0:$email_users[$key]['eefocus'];
-				$row['email'] = $email_users[$key]['email'];
+			$uid = $row['uid'];
+			if(isset($email_users[$uid])){
+				$row['eefocus_uid'] = empty($email_users[$uid]['eefocus'])?0:$email_users[$uid]['eefocus'];
+				$row['email'] = $email_users[$uid]['email'];
 				
 				
 				$sql = " INSERT INTO eef_platform_auto_business_edm_log(sid,uid,email,`time`,`open`,`click`,time_loaded) VALUES ( '".$row['sid']."',0,'".addslashes($row['email'])."','".$row['time']."','".$row['open']."','".$row['click']."','".$this->_now."');";
 				$sqls[] = $sql;
 
-				if($email_users[$key]['unsubscribed'] > 0){
-					$sql = " UPDATE eef_platform_auto_business_edm SET unsubscribe = 'Q' WHERE email = '".addslashes($email_users[$key]['email'])."';";
+				if($email_users[$uid]['unsubscribed'] > 0){
+					$sql = " UPDATE eef_platform_auto_business_edm SET unsubscribe = 'Q' WHERE email = '".addslashes($email_users[$uid]['email'])."';";
 					$sqls[] = $sql;
 				}
 

@@ -10,39 +10,19 @@
 
 $argv = $_SERVER['argv'];
 
-if (isset($argv[1]) && isset($argv[2])){
-	$input = trim($argv[1]);
-	$input2 = intval($argv[2]);
-}else{
-	die('Miss day && export');
-	// $input = '2015-02-02';
-	// $input2 = 1;
+if (!isset($argv[1]) || $argv[1] != 'confirm'){
+	echo 'param error';
+	exit;
 }
 
 include './config/g_config.php';
-
-$time = strtotime($input);
-if(empty($time)){
-	die('input day is error');
-}
-
-$day = date('Y-m-d',$time);
-$file_day = date('Y_m_d',$time);
 /*
 0: import: FALSE, calc  FALSE 
 1: import: FALSE, calc TRUE
 2 and other: import: TRUE, calc TRUE
 */
-if($input2 == 0){
-	$export = FALSE;
-	$export2 = FALSE;
-}elseif($input2 == 1) {
-	$export = FALSE;
-	$export2 = TRUE;
-}else{
-	$export = TRUE;
-	$export2 = TRUE;
-}
+$export = FALSE;
+$export2 = FALSE;
 
 include BASEPATH.'config/mysqli_config.'.G_CODETYPE.'.php';
 
@@ -69,14 +49,33 @@ include BASEPATH."classes/sendy_edm_log.php";
 
 $cls = new sendy_edm_log($g_db,$g_sdb);
 
-$flag = $cls->clear($day);
-if(!$flag) exit(1);
+$time = strtotime('2016-07-03');
+while (1) {
+	$day = date('Y-m-d',$time);
+	$file_day = date('Y_m_d',$time);
 
-$cls->set_output_file(BASEPATH.'output/sendy_import_'.$file_day.'.sql');
-$flag = $cls->import($day,$export);
-if(!$flag) exit(1);
+	$time += 86400;
+	if ($time == strtotime('20170629') || $time == strtotime('20170630')) {
+		continue;
+	}
+	if ($time >= strtotime('20171128')) {
+		break;
+	}
 
-$cls->set_output_file(BASEPATH.'output/sendy_calc_'.$file_day.'.sql');
-$flag = $cls->calc_open_click($day,$export2);
-if(!$flag) exit(1);
+	glog("\n\nINFO",'fix sendy edm data begin - ' . date('Y-m-d',$time) . ':');
+
+	$flag = $cls->clear($day);
+	if(!$flag) exit(1);
+
+	$cls->set_output_file(BASEPATH.'output/sendy_import_'.$file_day.'.sql');
+	$flag = $cls->import($day,$export);
+	if(!$flag) exit(1);
+
+	$cls->set_output_file(BASEPATH.'output/sendy_calc_'.$file_day.'.sql');
+	$flag = $cls->calc_open_click($day,$export2);
+	if(!$flag) exit(1);
+	glog("INFO",'fix sendy edm data end - ' . date('Y-m-d',$time) . '.');
+	sleep(5);
+}
+
 exit(0);

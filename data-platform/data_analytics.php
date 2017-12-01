@@ -45,7 +45,11 @@ class data_analytics {
 				if ($k == 0 ){
 					$value = $v;
 				}else{
-					$ret[$v] = $value;
+					if (!isset($ret[$v])) {
+						$ret[$v] = array($value);
+					} elseif (!in_array($value, $ret[$v])) {
+						$ret[$v][] = $value;
+					}
 				}
 			}
 		}
@@ -144,7 +148,9 @@ class data_analytics {
 		
 		foreach ($map as $v){
 			if (strpos($key,$v) !== false){
-				$result[$data[$v]] = 'h';
+				foreach ($data[$v] as $hy_item) {
+					$result[$hy_item] = 'h';
+				}
 			}
 		}
 		
@@ -190,18 +196,24 @@ class data_analytics {
 	 */
 	public function parse($offset,$limit,$time_limit){
 
+                echo "start.." . "\n";
 		$time = $this->_nowday - $time_limit;
-		
+                echo $time. "\n";		
 		$sql = " SELECT time,param1,param2,param3, uid, domain,ip FROM eef_platform_auto_business_access_log WHERE uid <> 0 and time >= {$time} ORDER BY time ASC LIMIT {$offset}, {$limit};";
-		
+	        
+                echo "building query..." . "\n";	
 		$query = $this->_db->query($sql);
+                echo "building query done..." . "\n";
 
 // 		if ($file === true){
 // 			file_put_contents($this->_output_file, " set names utf8;\n");
 // 		}
+
+
+                echo "start parsing...sql select.." . "\n";  
 		
 		while ($row = $this->_db->fetch_row($query)){
-			
+			echo "got result from sql.." . "\n";
 			$domain = preg_replace("/^.*:\/\/([a-zA-Z\-_\.]+).*$/", "\\1",  $row['domain']);
 			$type = -1;
 			$domain_tags = $this->_deal_domain($domain, $type);
