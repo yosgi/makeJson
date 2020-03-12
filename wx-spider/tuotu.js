@@ -113,7 +113,12 @@ async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
     }
     const match = /<div class="rich_media_content " id="js_content" style="visibility: hidden;">[\s]+([\s\S]+?)[\s]+<\/div>[\s]+<script nonce/.exec(html);
     if (!match) {
-        throw '获取详情匹配有误' + JSON.stringify(detailInfo);
+        if (html.indexOf('class="price js_pay_fee"') === -1) {
+            // 付费阅读
+            throw '获取详情匹配有误' + JSON.stringify(detailInfo);
+        } else {
+            return false;
+        }
     }
     
     // 原创

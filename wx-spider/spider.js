@@ -7,6 +7,8 @@ const sapi = require('./' + vendor);
 const MongoClient = require('mongodb').MongoClient;
 const moment = require('moment');
 const md5 = require("crypto-js/md5");
+const sanitizeHtml = require('sanitize-html');
+const cheerio = require('cheerio');
 
 const db = rds(config.db);
 
@@ -96,12 +98,6 @@ async function addArticle(article, wxAccount, articleTable) {
         author: wxAccount.eefAuthorId,
         user: config.eefUserId,
         category: 2,
-        content: article.content.replace(new RegExp('^(?:\s|<(?:p|div)>(?:&nbsp;|\s)*</(?:p|div)>)*(<p class="pagebreak page-title">[^>]*</p>\s)?(?:\s|<(?:p|div)>(?:&nbsp;|\s)*</(?:p|div)>)*', 'gi'), '$1')
-            .replace(new RegExp('([\u4e00-\u9fa5])([a-zA-Z0-9\._\\-\/\\\\]+)', 'gi'), '$1 $2')
-            .replace(new RegExp('([a-zA-Z0-9\._\\-\/\\\\]+)([\u4e00-\u9fa5])', 'gi'), '$1 $2')
-            .replace(/data-src="(.*?)"/g, function(match, url) {
-                return 'src="' + config.imgUrl + 'url=' + encodeURIComponent(url) + '&s=' + md5(url + 'F5WDkx1NpyvNolBD').toString().substr(2, 6) + '"';
-            }),
         summary: '',
         status: 2,
         tag: JSON.stringify(wxAccount.tags),
@@ -114,6 +110,42 @@ async function addArticle(article, wxAccount, articleTable) {
         slug: '',
         pages: 1,
     }
+    let content = article.content.replace(new RegExp('^(?:\s|<(?:p|div)>(?:&nbsp;|\s)*</(?:p|div)>)*(<p class="pagebreak page-title">[^>]*</p>\s)?(?:\s|<(?:p|div)>(?:&nbsp;|\s)*</(?:p|div)>)*', 'gi'), '$1')
+        .replace(new RegExp('([\u4e00-\u9fa5])([a-zA-Z0-9\._\\-\/\\\\]+)', 'gi'), '$1 $2')
+        .replace(new RegExp('([a-zA-Z0-9\._\\-\/\\\\]+)([\u4e00-\u9fa5])', 'gi'), '$1 $2')
+        .replace(/data-src="(.*?)"/g, function(match, url) {
+            return 'src="' + config.imgUrl + 'url=' + encodeURIComponent(url) + '&s=' + md5(url + 'F5WDkx1NpyvNolBD').toString().substr(2, 6) + '"';
+        });
+    content = sanitizeHtml(content, {
+        allowedTags: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol',
+        'nl', 'b', 'i', 'em', 'strike', 'code', 'hr', 'br', 'div', 'img',
+        'table', 'thead', 'caption', 'tbody', 'tr', 'th', 'td', 'pre'],
+        allowedAttributes: {
+            img: ['src']
+        },
+    });
+    const $ = cheerio.load(content, {
+        decodeEntities: false
+    })
+    $('img').each(function(i, elem) {
+        // const imgWidth = $(this).data('w')
+        // if (imgWidth) {
+        //     if (imgWidth > 400) {
+        //         $(this).css('width', '400px');
+        //     }
+        //     $(this).removeAttr('data-w');
+        // }
+        if ($(this).parents('p').length == 0) {
+            $(this).wrap('<p style="text-align: center;"></p>');
+        } else if ($(this).parent('p').length == 1) {
+            if ($(this).parent('p').children().length == 1) {
+                $(this).parent('p').css('text-align', 'center');
+            } else if ($(this).parent('p').children().length <= 3 && $(this).parent('p').children('br').length == $(this).parent('p').children().length - 1) {
+                $(this).parent('p').css('text-align', 'center');
+            }
+        }
+    });
+    addData.content = $('body').html();
     let match;
     const reg = /<(?:p|span)[^>]*>([^<]+?)<\//g;
     while ((match = reg.exec(article.content)) != null) {
