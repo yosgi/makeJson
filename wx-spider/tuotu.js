@@ -113,12 +113,11 @@ async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
     }
     const match = /<div class="rich_media_content " id="js_content" style="visibility: hidden;">[\s]+([\s\S]+?)[\s]+<\/div>[\s]+<script nonce/.exec(html);
     if (!match) {
-        if (html.indexOf('class="price js_pay_fee"') === -1) {
-            // 付费阅读
-            throw '获取详情匹配有误' + JSON.stringify(detailInfo);
-        } else {
-            return false;
+        if (html.indexOf('class="price js_pay_fee"') === -1 || html.indexOf('js_share_content') === -1) {
+            // 付费阅读 分享文章
+            log.error('获取详情匹配有误' + JSON.stringify(detailInfo));
         }
+        return false;
     }
     
     // 原创
