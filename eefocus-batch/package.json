@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ali-rds": "^3.3.0"
+    "ali-rds": "^3.3.0",
+    "googleapis": "^51.0.0",
+    "moment": "^2.25.3"
   }
 }
