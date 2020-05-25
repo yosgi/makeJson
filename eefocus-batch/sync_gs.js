@@ -79,7 +79,7 @@ function getNewToken(oAuth2Client, callback) {
 function getFromMap() {
     const fromMap = new Map();
     config.google.from_map.map(fromRow => {
-        fromMap.set(fromMap.app, fromMap.name);
+        fromMap.set(fromRow.app, fromRow.name);
     })
     return fromMap;
 }
@@ -96,7 +96,7 @@ async function main(auth){
         let maxid = parseInt(cellDefault[1]);
         let maxRow = parseInt(cellDefault[2]);
         if (!maxid || !maxRow) {
-            throw 'get uid-maxrow error'
+            throw 'get <db max id>-<sheet max row> error'
         }
         const limit = 100;
         const data = [{range: 'A1'}, {}];
