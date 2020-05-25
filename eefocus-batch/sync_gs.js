@@ -9,8 +9,8 @@ const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
 
-process.env.http_proxy = config.google.proxy;
-process.env.https_proxy = config.google.proxy;
+// process.env.http_proxy = config.google.proxy;
+// process.env.https_proxy = config.google.proxy;
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
