@@ -109,7 +109,7 @@ async function main(auth){
             }
             const appendData = []
             users.map(user => {
-                appendData.push([moment(user.time_register * 1000).format('YYYY/MM/DD HH:mm'), user.position, fromMap.has(user.from) ? fromMap.get(user.from) : 'OTHER', user.visit_province || '']);
+                appendData.push([moment(user.time_register * 1000).format('YYYY/M/D H:mm'), user.position, fromMap.has(user.from) ? fromMap.get(user.from) : 'OTHER', user.visit_province || '']);
             })
             data[1] = {
                 range: `A${maxRow + 1}`,
@@ -122,7 +122,7 @@ async function main(auth){
                 spreadsheetId: config.google.account_sheetid,
                 resource: {
                     data,
-                    valueInputOption: 'RAW',
+                    valueInputOption: 'USER_ENTERED',
                 },
             });
         }
