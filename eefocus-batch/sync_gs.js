@@ -101,9 +101,9 @@ async function main(auth){
         const limit = 100;
         const data = [{range: 'A1'}, {}];
         const fromMap = getFromMap();
-        const today = moment().startOf('day').unix();
+        const dayLimit = moment().subtract(3, 'days').startOf('day').unix();
         while(1) {
-            const users = await centerDb.query(`select id,time_register,position,\`from\`,visit_province from eef_platform_auto_business_edm where id > ${maxid} and time_register < ${today} order by id asc limit ${limit}`);
+            const users = await centerDb.query(`select id,time_register,position,\`from\`,visit_province from eef_platform_auto_business_edm where id > ${maxid} and time_register < ${dayLimit} order by id asc limit ${limit}`);
             if (!users || users.length <= 0) {
                 break;
             }
