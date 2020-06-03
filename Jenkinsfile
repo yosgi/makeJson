@@ -15,7 +15,7 @@ pipeline {
     RSYNC_PATH="${BASE_PATH}gitpull/"
     DEPLOY_PATH="${BASE_PATH}src/"
     KEEP_PKGS=5
-    PKG_PATH="../"
+    PKG_PATH="/tmp/"
     
     PKG_FORMAT="wxspider-%s.tar.gz"
     PKG_EXCLUDE_STR="  --exclude=\"*.map\" --exclude=.editorconfig  --exclude=.idea --exclude=*.md --exclude=.php_cs --exclude=.travis.yml --exclude=\"*@tmp\" --exclude=.git* "
