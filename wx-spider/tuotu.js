@@ -83,7 +83,8 @@ async function history(wxAccount, offset, start, lastTime, retry) {
             nextOffset,
         }
     } else {
-        if (retry >= 1 && response.data.code === 104) {
+        // if (retry >= 1 && response.data.code === 104) {
+        if (retry >= 1) {
             retry--;
             await sleep(1000);
             return history(wxAccount, offset, start, lastTime, retry);
