@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "ali-rds": "^3.3.0",
+    "google-libphonenumber": "^3.2.10",
     "googleapis": "^51.0.0",
     "moment": "^2.25.3"
   }
