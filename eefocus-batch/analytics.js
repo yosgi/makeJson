@@ -303,9 +303,9 @@ async function updateUser() {
             users.forEach(user => {
                 adds.push({
                     user_id: user.id,
-                    created_at: moment(user.time_created * 1000).format(),
-                    last_login: dataMap.has(user.id) ? moment(dataMap.get(user.id).value_int * 1000).format() : '',
-                    from: profileMap.get(user.id).registered_source,
+                    created_at: moment(user.time_created * 1000).format('YYYY-MM-DD HH:mm:ss'),
+                    last_login: dataMap.has(user.id) ? moment(dataMap.get(user.id).value_int * 1000).format('YYYY-MM-DD HH:mm:ss') : '1990-01-01 00:00:00',
+                    reg_from: profileMap.get(user.id).registered_source,
                 })
             });
             await analyticsDb.insert('users', adds);
@@ -328,7 +328,7 @@ async function updateUser() {
                 }
                 updates.push({
                     user_id: data.uid,
-                    last_login: moment(data.value_int * 1000).format(),
+                    last_login: moment(data.value_int * 1000).format('YYYY-MM-DD HH:mm:ss'),
                 })
             });
             if (updates.length > 0) {
