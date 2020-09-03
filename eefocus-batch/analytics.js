@@ -305,7 +305,7 @@ async function updateUser() {
                     user_id: user.id,
                     created_at: moment(user.time_created * 1000).format('YYYY-MM-DD HH:mm:ss'),
                     last_login: dataMap.has(user.id) ? moment(dataMap.get(user.id).value_int * 1000).format('YYYY-MM-DD HH:mm:ss') : '1990-01-01 00:00:00',
-                    reg_from: profileMap.get(user.id).registered_source,
+                    reg_from: profileMap.has(user.id) ? profileMap.get(user.id).registered_source : null,
                 })
             });
             await analyticsDb.insert('users', adds);
