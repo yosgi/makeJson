@@ -327,8 +327,8 @@ async function updateUser() {
                     lastTime = data.value_int;
                 }
                 updates.push({
-                    user_id: data.uid,
-                    last_login: moment(data.value_int * 1000).format('YYYY-MM-DD HH:mm:ss'),
+                    row: {last_login: moment(data.value_int * 1000).format('YYYY-MM-DD HH:mm:ss')},
+                    where: {user_id: data.uid}
                 })
             });
             if (updates.length > 0) {
