@@ -69,7 +69,7 @@ async function setFeatureImg(article, articleTable, idx) {
                 writer.on('finish', async() => {
                     const thumbPath = `${basePath}/${fileName}-thumb.${match[1]}`;
                     await sharp(filePath)
-                        .resize(260, 190)
+                        .resize(260, 195)
                         .toFile(thumbPath);
                     await db.update('eef_article_draft', { image: `${basePathDb}/${fileName}.${match[1]}`}, {
                         where: { id: article.articleId },

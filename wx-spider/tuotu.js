@@ -9,6 +9,7 @@ let configTable;
 
 const urls = {
     history: 'https://api.xdata.tuotoo.com/v1/open/mp/history',
+    articles: 'https://api.xdata.tuotoo.com/v1/open/mp/articles',
     login: 'https://api.xdata.tuotoo.com/v1/open/token',
 }
 
@@ -94,6 +95,47 @@ async function history(wxAccount, offset, start, lastTime, retry) {
     }
 }
 
+async function articles(wxAccount, lastTime, retry) {
+    if (typeof retry == 'undefined') {
+        retry = 3
+    }
+    const token = await getToken();
+    const response = await axios.get(urls.articles, {
+        headers: {'Authorization': token},
+        params: {'name': wxAccount.name, 'fetchDepth': 10}
+    });
+    if (response.data.code === 0) {
+        const result = response.data.data;
+        let articles = []
+        for (let idx = 0; idx < result.length; idx++) {
+            const detailInfo = result[idx];
+            if (detailInfo.Datetime <= lastTime) {
+                break;
+            }
+            const detailData = await fetchDetail({
+                itemShowType: 0,
+                contentUrl: detailInfo.URL,
+                title: detailInfo.Title,
+                author: detailInfo.Author,
+                coverImgUrl: detailInfo.Cover,
+            }, {}, {dateTime: detailInfo.Datetime});
+            if (detailData) {
+                articles.push(detailData);
+            }
+            await sleep(Math.floor(Math.random() * (config.sleepMss[1] - config.sleepMss[0] + 1) + config.sleepMss[0]));
+        }
+        return articles;
+    } else {
+        if (retry >= 1) {
+            retry--;
+            await sleep(1000);
+            return articles(wxAccount, lastTime, retry);
+        } else {
+            throw `articles 获取失败: ${wxAccount.name} ${JSON.stringify(response.data)}`;
+        }
+    }
+}
+
 async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
     if (detailInfo.itemShowType !== 0) {
         return false;
@@ -136,5 +178,6 @@ async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
 
 module.exports = {
     history,
+    articles,
     setMongo,
 }

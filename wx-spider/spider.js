@@ -56,24 +56,38 @@ async function fetch(wxAccount, articleTable, accountTable) {
     if (curTime - lastTime < 3600) {
         return;
     }
-    while(1) {
-        let { articles, nextOffset } = await sapi.history(wxAccount, offset, start, lastTime);
-        nextOffset = parseInt(nextOffset);
-        if (articles.length > 0) {
-            const addList = [];
-            articles.forEach(article => {
-                addList.push(addArticle(article, wxAccount, articleTable))
-            });
-            await Promise.all(addList);
-            console.log(`${wxAccount.name} - next offset - ${offset}`)
-        } else {
-            break;
-        }
-        if (nextOffset <= offset) {
-            break;
-        }
-        offset = nextOffset;
+
+    // use articles api
+    console.log(wxAccount.name)
+    const articles = await sapi.articles(wxAccount, lastTime);
+
+    if (articles.length > 0) {
+        const addList = [];
+        articles.forEach(article => {
+            addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
+        });
+        await Promise.all(addList);
     }
+
+    // use history api
+    // while(1) {
+    //     let { articles, nextOffset } = await sapi.history(wxAccount, offset, start, lastTime);
+    //     nextOffset = parseInt(nextOffset);
+    //     if (articles.length > 0) {
+    //         const addList = [];
+    //         articles.forEach(article => {
+    //             addList.push(addArticle(article, wxAccount, articleTable, {"baseInfo.appMsgId": article.data.baseInfo.appMsgId, "detailInfo.itemIndex": article.data.detailInfo.itemIndex}))
+    //         });
+    //         await Promise.all(addList);
+    //         console.log(`${wxAccount.name} - next offset - ${offset}`)
+    //     } else {
+    //         break;
+    //     }
+    //     if (nextOffset <= offset) {
+    //         break;
+    //     }
+    //     offset = nextOffset;
+    // }
     await accountTable.updateOne({
         userName: wxAccount.userName,
     }, {
@@ -81,14 +95,17 @@ async function fetch(wxAccount, articleTable, accountTable) {
     });
 }
 
-async function addArticle(article, wxAccount, articleTable) {
+async function addArticle(article, wxAccount, articleTable, existsWhere = null) {
     let articleTitle = `${article.title} - ${wxAccount.name}`;
     if (article.author != '') {
         articleTitle += ' - ' + article.author;
     }
-    const articleExist = await articleTable.find({"baseInfo.appMsgId": article.data.baseInfo.appMsgId, "detailInfo.itemIndex": article.data.detailInfo.itemIndex}).count();
-    if (articleExist > 0) {
-        return;
+    if (existsWhere) {
+        const articleExist = await articleTable.find(existsWhere).count();
+
+        if (articleExist > 0) {
+            return;
+        }
     }
     const addData = {
         subject: articleTitle,
