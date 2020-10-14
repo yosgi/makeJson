@@ -12,7 +12,7 @@ const cheerio = require('cheerio');
 
 const db = rds(config.db);
 
-async function taskBegin() {
+async function taskBegin(command) {
     console.log('fetch article begin')
     const client = await MongoClient.connect(config.mongo.url, {useUnifiedTopology: true});
     const mdb = await client.db('wxspider');
@@ -23,7 +23,7 @@ async function taskBegin() {
     const accountList = config.wxAccount;
     for (let i = 0; i < accountList.length; i++) {
         const wxAccount = accountList[i];
-        await fetch(wxAccount, articleTable, accountTable);
+        await fetch(wxAccount, articleTable, accountTable, command);
     }
     client.close()
     db.getConnection().then(conn => {
@@ -32,9 +32,9 @@ async function taskBegin() {
     console.log('fetch article finish')
 }
 
-async function fetch(wxAccount, articleTable, accountTable) {
+async function fetch(wxAccount, articleTable, accountTable, command) {
     const accountRow = await accountTable.find({userName: wxAccount.userName}).toArray();
-    let lastTime = parseInt(moment().subtract(7, 'days').startOf('day').format('x') / 1000);
+    let lastTime = parseInt(moment().subtract(1, 'days').startOf('day').format('x') / 1000);
     if (accountRow.length == 0) {
         await accountTable.insertOne({
             userName: wxAccount.userName,
@@ -58,36 +58,42 @@ async function fetch(wxAccount, articleTable, accountTable) {
     }
 
     // use articles api
-    console.log(wxAccount.name)
-    const articles = await sapi.articles(wxAccount, lastTime);
+    // console.log(wxAccount.name)
+    // const articles = await sapi.articles(wxAccount, lastTime, command);
+    // if (command == 'test') {
+    //     return;
+    // }
 
-    if (articles.length > 0) {
-        const addList = [];
-        articles.forEach(article => {
-            addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
-        });
-        await Promise.all(addList);
-    }
+    // if (articles.length > 0) {
+    //     const addList = [];
+    //     articles.forEach(article => {
+    //         addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
+    //     });
+    //     await Promise.all(addList);
+    // }
 
     // use history api
-    // while(1) {
-    //     let { articles, nextOffset } = await sapi.history(wxAccount, offset, start, lastTime);
-    //     nextOffset = parseInt(nextOffset);
-    //     if (articles.length > 0) {
-    //         const addList = [];
-    //         articles.forEach(article => {
-    //             addList.push(addArticle(article, wxAccount, articleTable, {"baseInfo.appMsgId": article.data.baseInfo.appMsgId, "detailInfo.itemIndex": article.data.detailInfo.itemIndex}))
-    //         });
-    //         await Promise.all(addList);
-    //         console.log(`${wxAccount.name} - next offset - ${offset}`)
-    //     } else {
-    //         break;
-    //     }
-    //     if (nextOffset <= offset) {
-    //         break;
-    //     }
-    //     offset = nextOffset;
-    // }
+    while(1) {
+        let { articles, nextOffset } = await sapi.history(wxAccount, offset, start, lastTime, command);
+        if (command == 'test') {
+            return;
+        }
+        nextOffset = parseInt(nextOffset);
+        if (articles.length > 0) {
+            const addList = [];
+            articles.forEach(article => {
+                addList.push(addArticle(article, wxAccount, articleTable, {"baseInfo.appMsgId": article.data.baseInfo.appMsgId, "detailInfo.itemIndex": article.data.detailInfo.itemIndex}))
+            });
+            await Promise.all(addList);
+            console.log(`${wxAccount.name} - next offset - ${offset}`)
+        } else {
+            break;
+        }
+        if (nextOffset <= offset) {
+            break;
+        }
+        offset = nextOffset;
+    }
     await accountTable.updateOne({
         userName: wxAccount.userName,
     }, {
