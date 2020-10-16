@@ -112,8 +112,8 @@ pipeline {
       }
       steps {
         script {
-            sh "git config http.proxy http://103.91.219.139:15886 || true && git config https.proxy http://103.91.219.139:15886 || true"
-            sh "git config --global http.proxy http://103.91.219.139:15886 || true && git config --global https.proxy http://103.91.219.139:15886 || true"
+            // sh "git config http.proxy http://103.91.219.139:15886 || true && git config https.proxy http://103.91.219.139:15886 || true"
+            // sh "git config --global http.proxy http://103.91.219.139:15886 || true && git config --global https.proxy http://103.91.219.139:15886 || true"
 
           checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_TAG}"]], userRemoteConfigs: [[credentialsId: '2a657cb0-dbbe-4cf0-98b1-fe6e528c69c2', url: "${params.GITHUB_PROJECT}"]]])
           dir("wx-spider") {
@@ -136,7 +136,7 @@ pipeline {
       steps {
         dir("wx-spider") {
           script {
-            sh "npm config set proxy http://103.91.219.139:15886 && npm config set https-proxy http://103.91.219.139:15886"
+            // sh "npm config set proxy http://103.91.219.139:15886 && npm config set https-proxy http://103.91.219.139:15886"
             sh "rm -f package-lock.json"
             sh "npm install"
           }
