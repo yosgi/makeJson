@@ -139,7 +139,7 @@ async function articles(wxAccount, lastTime, command, retry) {
     } else {
         if (retry >= 1) {
             retry--;
-            await sleep(1000);
+            await sleep(3000 * retry);
             return articles(wxAccount, lastTime, command, retry);
         } else {
             throw `articles 获取失败: ${wxAccount.name} ${JSON.stringify(response.data)}`;
