@@ -57,42 +57,44 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
         return;
     }
 
-    // use articles api
-    // console.log(wxAccount.name)
-    // const articles = await sapi.articles(wxAccount, lastTime, command);
-    // if (command == 'test') {
-    //     return;
-    // }
-
-    // if (articles.length > 0) {
-    //     const addList = [];
-    //     articles.forEach(article => {
-    //         addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
-    //     });
-    //     await Promise.all(addList);
-    // }
-
     // use history api
-    while(1) {
-        let { articles, nextOffset } = await sapi.history(wxAccount, offset, start, lastTime, command);
+    try {
+        while(1) {
+            let { articles, nextOffset } = await sapi.history(wxAccount, offset, start, lastTime, command);
+            if (command == 'test') {
+                return;
+            }
+            nextOffset = parseInt(nextOffset);
+            if (articles.length > 0) {
+                const addList = [];
+                articles.forEach(article => {
+                    addList.push(addArticle(article, wxAccount, articleTable, {"baseInfo.appMsgId": article.data.baseInfo.appMsgId, "detailInfo.itemIndex": article.data.detailInfo.itemIndex}))
+                });
+                await Promise.all(addList);
+                console.log(`${wxAccount.name} - next offset - ${offset}`)
+            } else {
+                break;
+            }
+            if (nextOffset <= offset) {
+                break;
+            }
+            offset = nextOffset;
+        }
+    } catch (error) {
+        // use articles api
+        console.log(wxAccount.name)
+        const articles = await sapi.articles(wxAccount, lastTime, command);
         if (command == 'test') {
             return;
         }
-        nextOffset = parseInt(nextOffset);
+
         if (articles.length > 0) {
             const addList = [];
             articles.forEach(article => {
-                addList.push(addArticle(article, wxAccount, articleTable, {"baseInfo.appMsgId": article.data.baseInfo.appMsgId, "detailInfo.itemIndex": article.data.detailInfo.itemIndex}))
+                addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
             });
             await Promise.all(addList);
-            console.log(`${wxAccount.name} - next offset - ${offset}`)
-        } else {
-            break;
         }
-        if (nextOffset <= offset) {
-            break;
-        }
-        offset = nextOffset;
     }
     await accountTable.updateOne({
         userName: wxAccount.userName,

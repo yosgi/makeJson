@@ -94,7 +94,7 @@ async function history(wxAccount, offset, start, lastTime, command, retry) {
         // if (retry >= 1 && response.data.code === 104) {
         if (retry >= 1) {
             retry--;
-            await sleep(3000);
+            await sleep(3000 * (3 - retry));
             console.log(`retry ${retry}... ${wxAccount.name} ${JSON.stringify(response.data)}`)
             return history(wxAccount, offset, start, lastTime, command, retry);
         } else {
