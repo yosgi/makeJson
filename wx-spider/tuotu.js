@@ -10,6 +10,7 @@ let configTable;
 const urls = {
     history: 'https://api.xdata.tuotoo.com/v1/open/mp/history',
     articles: 'https://api.xdata.tuotoo.com/v1/open/mp/articles',
+    info: 'https://api.xdata.tuotoo.com/v1/open/mp/info',
     login: 'https://api.xdata.tuotoo.com/v1/open/token',
 }
 
@@ -187,8 +188,22 @@ async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
     return false;
 }
 
+async function wxInfo(wxAccountName) {
+    const token = await getToken();
+    const response = await axios.get(urls.info, {
+        headers: {'Authorization': token},
+        params: {'name': wxAccountName}
+    });
+    if (response.data.code === 0) {
+        return response.data.data;
+    } else {
+        throw `wxinfo 获取失败: ${wxAccountName} ${JSON.stringify(response.data)}`;
+    }
+}
+
 module.exports = {
     history,
     articles,
     setMongo,
+    wxInfo
 }
