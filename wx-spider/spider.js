@@ -31,6 +31,40 @@ async function taskBegin(command) {
     console.log('fetch article finish')
 }
 
+async function fetchAll(accountList) {
+    console.log('fetch article begin')
+    const client = await MongoClient.connect(config.mongo.url, {useUnifiedTopology: true});
+    const mdb = await client.db('wxspider');
+    await sapi.setMongo(mdb);
+    const articleTable = await mdb.collection('article');
+    const lastTime = 0;
+
+    for (let i = 0; i < accountList.length; i++) {
+        const wxAccount = accountList[i];
+        let page = 0
+
+        while (1) {
+            console.log(`${wxAccount.name} - page ${page}`)
+            const articles = await sapi.articles({wxAccount,page}, lastTime);
+            if (articles.length > 0) {
+                const addList = [];
+                articles.forEach(article => {
+                    addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
+                });
+                await Promise.all(addList);
+            } else {
+                break;
+            }
+            page++
+        }
+    }
+    client.close()
+    db.getConnection().then(conn => {
+        conn.conn.destroy()
+    });
+    console.log('fetch article finish')
+}
+
 async function fetch(wxAccount, articleTable, accountTable, command) {
     const accountRow = await accountTable.find({userName: wxAccount.userName}).toArray();
     let lastTime = parseInt(moment().subtract(1, 'days').startOf('day').format('x') / 1000);
@@ -99,7 +133,7 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
     } else if (config.spider.default == 'tianapi') {
         // use articles api
         console.log(wxAccount.name)
-        const articles = await sapi.articles(wxAccount, lastTime, command);
+        const articles = await sapi.articles({wxAccount}, lastTime, command);
         if (command == 'test') {
             return;
         }
@@ -202,4 +236,5 @@ async function addArticle(article, wxAccount, articleTable, existsWhere = null) 
 
 module.exports = {
     taskBegin,
+    fetchAll
 }

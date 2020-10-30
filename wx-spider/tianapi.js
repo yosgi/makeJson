@@ -21,12 +21,16 @@ async function setMongo(mongodb) {
     configTable = await mdb.collection('config');
 }
 
-async function articles(wxAccount, lastTime, command, retry) {
+async function articles(options, lastTime, command, retry) {
+    let {wxAccount, page} = options;
+    if (!page) {
+        page = 0;
+    }
     if (typeof retry == 'undefined') {
         retry = 3
     }
     const response = await axios.get(urls.articles, {
-        params: {'key': config.spider.tianapi.key, 'biz': wxAccount.biz, 'word': wxAccount.name}
+        params: {'key': config.spider.tianapi.key, 'biz': wxAccount.biz, 'word': wxAccount.name, 'page': page}
     });
     if (response.data.code === 200) {
         if (command == 'test') {
@@ -53,6 +57,9 @@ async function articles(wxAccount, lastTime, command, retry) {
         }
         return articles;
     } else {
+        if (page > 0 && response.data.code === 250) {
+            return [];
+        }
         if (retry >= 1) {
             retry--;
             await sleep(3000 * (3 - retry));
