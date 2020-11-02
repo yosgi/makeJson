@@ -63,7 +63,7 @@ async function articles(options, lastTime, command, retry) {
         if (retry >= 1) {
             retry--;
             await sleep(3000 * (3 - retry));
-            return articles(wxAccount, lastTime, command, retry);
+            return articles(options, lastTime, command, retry);
         } else {
             throw `articles 获取失败: ${wxAccount.name} ${JSON.stringify(response.data)}`;
         }
