@@ -86,7 +86,7 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
     let offset = 0;
     const curTime = parseInt(moment().format('x') / 1000);
     const start = moment().toISOString();
-    if (curTime - lastTime < 3600) {
+    if (curTime - lastTime < 1800) {
         return;
     }
 

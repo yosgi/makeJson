@@ -27,7 +27,7 @@ async function articles(options, lastTime, command, retry) {
         page = 0;
     }
     if (typeof retry == 'undefined') {
-        retry = 3
+        retry = 5
     }
     const response = await axios.get(urls.articles, {
         params: {'key': config.spider.tianapi.key, 'biz': wxAccount.biz, 'word': wxAccount.name, 'page': page}
@@ -62,7 +62,7 @@ async function articles(options, lastTime, command, retry) {
         }
         if (retry >= 1) {
             retry--;
-            await sleep(3000 * (3 - retry));
+            await sleep(2000 * (5 - retry));
             return articles(options, lastTime, command, retry);
         } else {
             throw `articles 获取失败: ${wxAccount.name} ${JSON.stringify(response.data)}`;
