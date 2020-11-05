@@ -62,6 +62,7 @@ async function articles(options, lastTime, command, retry) {
         }
         if (retry >= 1) {
             retry--;
+            console.log(`retry ${retry}... ${wxAccount.name} ${JSON.stringify(response.data)}`)
             await sleep(2000 * (5 - retry));
             return articles(options, lastTime, command, retry);
         } else {
