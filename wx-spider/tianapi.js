@@ -63,7 +63,11 @@ async function articles(options, lastTime, command, retry) {
         if (retry >= 1) {
             retry--;
             console.log(`retry ${retry}... ${wxAccount.name} ${JSON.stringify(response.data)}`)
-            await sleep(2000 * (5 - retry));
+            if (response.data.code === 130) {
+                await sleep(60000)
+            } else {
+                await sleep(2000 * (5 - retry));
+            }
             return articles(options, lastTime, command, retry);
         } else {
             throw `articles 获取失败: ${wxAccount.name} ${JSON.stringify(response.data)}`;
