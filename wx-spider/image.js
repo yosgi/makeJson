@@ -46,7 +46,7 @@ function sleep(ms) {
 async function setFeatureImg(article, articleTable, idx) {
     await sleep(10 * idx)
     const url = article.detailInfo.coverImgUrl;
-    const match = /mmbiz\.qpic\.cn\/(?:[a-z_]*?)mmbiz_([a-z]+)\//.exec(url);
+    const match = /mmbiz\.(?:[a-z]+)\.cn\/(?:[a-z_]*?)mmbiz_([a-z]+)\//.exec(url);
     if (!match) {
         log.error('匹配失败：' + url);
         return;
