@@ -38,22 +38,24 @@ async function articles(options, lastTime, command, retry) {
         }
         const result = response.data.newslist;
         let articles = []
-        for (let idx = 0; idx < result.length; idx++) {
-            const detailInfo = result[idx];
-            const detailTime = parseInt(moment(detailInfo.ctime).format('x') / 1000);
-            if (detailTime <= lastTime) {
-                break;
+        if (result) {
+            for (let idx = 0; idx < result.length; idx++) {
+                const detailInfo = result[idx];
+                const detailTime = parseInt(moment(detailInfo.ctime).format('x') / 1000);
+                if (detailTime <= lastTime) {
+                    break;
+                }
+                const detailData = await fetchDetail({
+                    contentUrl: detailInfo.url,
+                    title: detailInfo.title,
+                    coverImgUrl: detailInfo.picUrl,
+                    author: '',
+                }, {}, {dateTime: detailTime});
+                if (detailData) {
+                    articles.push(detailData);
+                }
+                await sleep(Math.floor(Math.random() * (config.sleepMss[1] - config.sleepMss[0] + 1) + config.sleepMss[0]));
             }
-            const detailData = await fetchDetail({
-                contentUrl: detailInfo.url,
-                title: detailInfo.title,
-                coverImgUrl: detailInfo.picUrl,
-                author: '',
-            }, {}, {dateTime: detailTime});
-            if (detailData) {
-                articles.push(detailData);
-            }
-            await sleep(Math.floor(Math.random() * (config.sleepMss[1] - config.sleepMss[0] + 1) + config.sleepMss[0]));
         }
         return articles;
     } else {
