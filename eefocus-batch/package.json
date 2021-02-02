@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "ali-rds": "^3.3.0",
+    "amqplib": "^0.6.0",
+    "axios": "^0.21.1",
     "google-libphonenumber": "^3.2.10",
     "googleapis": "^51.0.0",
     "moment": "^2.25.3"
