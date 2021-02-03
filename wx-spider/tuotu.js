@@ -188,13 +188,17 @@ async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
     return false;
 }
 
-async function wxInfo(wxAccountName) {
+async function wxInfo(wxAccountName, retry) {
     const token = await getToken();
     const response = await axios.get(urls.info, {
         headers: {'Authorization': token},
         params: {'name': wxAccountName}
     });
     if (response.data.code === 0) {
+        if (retry > 0 && !response.data.Biz) {
+            await sleep(3000 * (3 - retry));
+            return await wxInfo(wxAccountName, --retry)
+        }
         return response.data.data;
     } else {
         throw `wxinfo 获取失败: ${wxAccountName} ${JSON.stringify(response.data)}`;

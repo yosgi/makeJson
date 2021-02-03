@@ -31,13 +31,12 @@ async function taskBegin(command) {
     console.log('fetch article finish')
 }
 
-async function fetchAll(accountList) {
+async function fetchAll(accountList, lastTime) {
     console.log('fetch article begin')
     const client = await MongoClient.connect(config.mongo.url, {useUnifiedTopology: true});
     const mdb = await client.db('wxspider');
     await sapi.setMongo(mdb);
     const articleTable = await mdb.collection('article');
-    const lastTime = 0;
 
     for (let i = 0; i < accountList.length; i++) {
         const wxAccount = accountList[i];
@@ -186,8 +185,8 @@ async function addArticle(article, wxAccount, articleTable, existsWhere = null) 
         pages: 1,
     }
     let content = article.content.replace(new RegExp('^(?:\s|<(?:p|div)>(?:&nbsp;|\s)*</(?:p|div)>)*(<p class="pagebreak page-title">[^>]*</p>\s)?(?:\s|<(?:p|div)>(?:&nbsp;|\s)*</(?:p|div)>)*', 'gi'), '$1')
-        .replace(new RegExp('([\u4e00-\u9fa5])([a-zA-Z0-9\._\\-\/\\\\]+)', 'gi'), '$1 $2')
-        .replace(new RegExp('([a-zA-Z0-9\._\\-\/\\\\]+)([\u4e00-\u9fa5])', 'gi'), '$1 $2')
+        // .replace(new RegExp('([\u4e00-\u9fa5])([a-zA-Z0-9\._\\-\/\\\\]+)', 'gi'), '$1 $2')
+        // .replace(new RegExp('([a-zA-Z0-9\._\\-\/\\\\]+)([\u4e00-\u9fa5])', 'gi'), '$1 $2')
         .replace(/data-src="(.*?)"/g, function(match, url) {
             return 'src="' + config.imgUrl + 'url=' + encodeURIComponent(url) + '&s=' + md5(url + 'F5WDkx1NpyvNolBD').toString().substr(2, 6) + '"';
         });
@@ -231,7 +230,11 @@ async function addArticle(article, wxAccount, articleTable, existsWhere = null) 
         }
     }
     const result = await db.insert('eef_article_draft', addData);
-    await articleTable.insertOne({ ...article.data, articleId: result.insertId});
+    await articleTable.insertOne({ ...article.data, articleId: result.insertId, wxAccount: {
+        name: wxAccount.name,
+        userName: wxAccount.userName,
+        eefAuthorId: wxAccount.eefAuthorId,
+    }});
 }
 
 module.exports = {

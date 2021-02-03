@@ -3,15 +3,20 @@
 const spider = require('./spider');
 const image = require('./image');
 const log = require('./log');
+const moment = require('moment');
 
 const accountList = [
-    {name: '智车行家', 'biz': 'MzU3NDY4Mjk4OQ==', userName: 'gh_4090d6fa3eb3', eefAuthorId: 152, channel: 1, subtitle:'', tags:['公众号']},
+    {name: 'EPIC开元通信', biz: 'Mzg5MzA3NTc1MA==', userName: 'EPICMEMS', eefAuthorId: 291, channel: 1, subtitle:'', tags:['公众号']},
+    {name: 'Gopro光莆生活', biz: 'MzUzMzkxODA3Nw==', userName: 'GoproFM520', eefAuthorId: 292, channel: 1, subtitle:'', tags:['公众号']},
 ];
 
 (async () => {
     try {
-        await spider.fetchAll(accountList);
-        await image.download();
+        const lastTime = parseInt(moment().subtract(1, 'years').startOf('day').format('x') / 1000);
+        for (let i = 0; i < accountList.length; i++) {
+            await spider.fetchAll([accountList[i]], lastTime);
+            await image.download();
+        }
         process.exit()
     } catch (error) {
         log.error('exception: ' + JSON.stringify(error));
