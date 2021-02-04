@@ -237,11 +237,7 @@ async function addArticle(article, wxAccount, articleTable, existsWhere = null) 
         }
     }
     const result = await db.insert('eef_article_draft', addData);
-    await articleTable.insertOne({ ...article.data, articleId: result.insertId, wxAccount: {
-        name: wxAccount.name,
-        userName: wxAccount.userName,
-        eefAuthorId: wxAccount.eefAuthorId,
-    }});
+    await articleTable.insertOne({ ...article.data, articleId: result.insertId, wxAccountId: wxAccount._id});
 }
 
 module.exports = {
