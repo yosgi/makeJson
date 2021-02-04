@@ -8,6 +8,7 @@ const moment = require('moment');
 const md5 = require("crypto-js/md5");
 const sanitizeHtml = require('sanitize-html');
 const cheerio = require('cheerio');
+const image = require('./image');
 
 const db = rds(config.db);
 
@@ -19,10 +20,24 @@ async function taskBegin(command) {
     const articleTable = await mdb.collection('article');
     const accountTable = await mdb.collection('account');
 
-    const accountList = config.wxAccount;
-    for (let i = 0; i < accountList.length; i++) {
-        const wxAccount = accountList[i];
-        await fetch(wxAccount, articleTable, accountTable, command);
+    let skip = 0;
+    const limit = 10;
+    while(1) {
+        const accountList = await accountTable.find({}, {
+            sort: {_id: 1},
+            limit,
+            skip,
+        }).toArray();
+        skip += limit;
+        if (!accountList || accountList.length <= 0) {
+            break;
+        }
+        for (let i = 0; i < accountList.length; i++) {
+            await fetch(accountList[i], articleTable, accountTable, command);
+            if (command != 'test') {
+                await image.download();
+            }
+        }
     }
     client.close()
     db.getConnection().then(conn => {
@@ -31,7 +46,11 @@ async function taskBegin(command) {
     console.log('fetch article finish')
 }
 
-async function fetchAll(accountList, lastTime) {
+async function fetchAll(accountList) {
+    if (config.spider.default !== 'tianapi') {
+        console.log('api not supported')
+        return
+    }
     console.log('fetch article begin')
     const client = await MongoClient.connect(config.mongo.url, {useUnifiedTopology: true});
     const mdb = await client.db('wxspider');
@@ -44,14 +63,15 @@ async function fetchAll(accountList, lastTime) {
 
         while (1) {
             console.log(`${wxAccount.name} - page ${page}`)
-            const articles = await sapi.articles({wxAccount,page}, lastTime);
+            const [hasNext, articles] = await sapi.articles({wxAccount,page});
             if (articles.length > 0) {
                 const addList = [];
                 articles.forEach(article => {
                     addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
                 });
                 await Promise.all(addList);
-            } else {
+            }
+            if (!hasNext) {
                 break;
             }
             page++
@@ -65,27 +85,14 @@ async function fetchAll(accountList, lastTime) {
 }
 
 async function fetch(wxAccount, articleTable, accountTable, command) {
-    const accountRow = await accountTable.find({userName: wxAccount.userName}).toArray();
-    let lastTime = parseInt(moment().subtract(1, 'days').startOf('day').format('x') / 1000);
-    if (accountRow.length == 0) {
-        await accountTable.insertOne({
-            userName: wxAccount.userName,
-            name: wxAccount.name,
-        });
-    } else if (accountRow[0].lastTime) {
-        await accountTable.updateOne({
-            userName: wxAccount.userName,
-        }, {
-            $set: { name : wxAccount.name }
-        });
-        if (accountRow[0].lastTime > lastTime) {
-            lastTime = accountRow[0].lastTime;
-        }
+    if (!wxAccount.lastTime || wxAccount.lastTime == 0) {
+        wxAccount.lastTime = parseInt(moment().subtract(1, 'days').startOf('day').format('x') / 1000);
     }
+
     let offset = 0;
     const curTime = parseInt(moment().format('x') / 1000);
     const start = moment().toISOString();
-    if (curTime - lastTime < 1800) {
+    if (curTime - wxAccount.lastTime < 1800) {
         return;
     }
 
@@ -93,7 +100,7 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
         // use history api
         try {
             while(1) {
-                let { articles, nextOffset } = await sapi.history(wxAccount, offset, start, lastTime, command);
+                let { articles, nextOffset } = await sapi.history(wxAccount, offset, start, command);
                 if (command == 'test') {
                     return;
                 }
@@ -116,7 +123,7 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
         } catch (error) {
             // use articles api
             console.log(wxAccount.name)
-            const articles = await sapi.articles(wxAccount, lastTime, command);
+            const articles = await sapi.articles(wxAccount, command);
             if (command == 'test') {
                 return;
             }
@@ -132,7 +139,7 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
     } else if (config.spider.default == 'tianapi') {
         // use articles api
         console.log(wxAccount.name)
-        const articles = await sapi.articles({wxAccount}, lastTime, command);
+        const [hasNext, articles] = await sapi.articles({wxAccount}, command);
         if (command == 'test') {
             return;
         }

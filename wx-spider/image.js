@@ -36,6 +36,7 @@ async function download() {
         console.log(`done - ${limit}`)
     }
 
+    client.close()
     console.log('fetch image finish')
 }
 

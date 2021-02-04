@@ -21,7 +21,15 @@ async function setMongo(mongodb) {
     configTable = await mdb.collection('config');
 }
 
-async function articles(options, lastTime, command, retry) {
+
+async function checkActive() {
+    const response = await axios.get(urls.articles, {
+        params: {'key': config.spider.tianapi.key, 'biz': 'MzI4MDI4MDE5Ng=='}
+    });
+    return response.data.code === 200;
+}
+
+async function articles(options, command, retry) {
     let {wxAccount, page} = options;
     if (!page) {
         page = 0;
@@ -29,12 +37,13 @@ async function articles(options, lastTime, command, retry) {
     if (typeof retry == 'undefined') {
         retry = 5
     }
+    let hasNext = true;
     const response = await axios.get(urls.articles, {
         params: {'key': config.spider.tianapi.key, 'biz': wxAccount.biz, 'word': wxAccount.name, 'page': page}
     });
     if (response.data.code === 200) {
         if (command == 'test') {
-            return [];
+            return [false, []];
         }
         const result = response.data.newslist;
         let articles = []
@@ -42,7 +51,8 @@ async function articles(options, lastTime, command, retry) {
             for (let idx = 0; idx < result.length; idx++) {
                 const detailInfo = result[idx];
                 const detailTime = parseInt(moment(detailInfo.ctime).format('x') / 1000);
-                if (detailTime <= lastTime) {
+                if (detailTime <= wxAccount.lastTime) {
+                    hasNext = false
                     break;
                 }
                 const detailData = await fetchDetail({
@@ -57,10 +67,20 @@ async function articles(options, lastTime, command, retry) {
                 await sleep(Math.floor(Math.random() * (config.sleepMss[1] - config.sleepMss[0] + 1) + config.sleepMss[0]));
             }
         }
-        return articles;
+        if (!result || result.length == 0) {
+            hasNext = false
+        }
+        return [hasNext, articles];
     } else {
         if (page > 0 && response.data.code === 250) {
-            return [];
+            return [false, []];
+        }
+        if (response.data.code === 250) {
+            const apiActive = await checkActive();
+            if (apiActive) {
+                return [false, []];
+            }
+            retry = 0;
         }
         if (retry >= 1) {
             retry--;
@@ -70,7 +90,7 @@ async function articles(options, lastTime, command, retry) {
             } else {
                 await sleep(2000 * (5 - retry));
             }
-            return articles(options, lastTime, command, retry);
+            return articles(options, command, retry);
         } else {
             throw `articles 获取失败: ${wxAccount.name} ${JSON.stringify(response.data)}`;
         }

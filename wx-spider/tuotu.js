@@ -49,7 +49,7 @@ async function getToken() {
     return token;
 }
 
-async function history(wxAccount, offset, start, lastTime, command, retry) {
+async function history(wxAccount, offset, start, command, retry) {
     if (typeof retry == 'undefined') {
         retry = 3
     }
@@ -73,7 +73,7 @@ async function history(wxAccount, offset, start, lastTime, command, retry) {
             for (let idx = 0; idx < result.msgList.msg.length; idx++) {
                 const msg = result.msgList.msg[idx];
                 if (msg.appMsg && msg.appMsg.detailInfo) {
-                    if (msg.baseInfo.dateTime < lastTime) {
+                    if (msg.baseInfo.dateTime < wxAccount.lastTime) {
                         nextOffset = 0;
                         break;
                     }
@@ -97,14 +97,14 @@ async function history(wxAccount, offset, start, lastTime, command, retry) {
             retry--;
             await sleep(3000 * (3 - retry));
             console.log(`retry ${retry}... ${wxAccount.name} ${JSON.stringify(response.data)}`)
-            return history(wxAccount, offset, start, lastTime, command, retry);
+            return history(wxAccount, offset, start, command, retry);
         } else {
             throw `history 获取失败: ${wxAccount.name} ${JSON.stringify(response.data)}`;
         }
     }
 }
 
-async function articles(wxAccount, lastTime, command, retry) {
+async function articles(wxAccount, command, retry) {
     if (typeof retry == 'undefined') {
         retry = 3
     }
@@ -121,7 +121,7 @@ async function articles(wxAccount, lastTime, command, retry) {
         let articles = []
         for (let idx = 0; idx < result.length; idx++) {
             const detailInfo = result[idx];
-            if (detailInfo.Datetime <= lastTime) {
+            if (detailInfo.Datetime <= wxAccount.lastTime) {
                 break;
             }
             const detailData = await fetchDetail({
@@ -141,7 +141,7 @@ async function articles(wxAccount, lastTime, command, retry) {
         if (retry >= 1) {
             retry--;
             await sleep(3000 * (3 - retry));
-            return articles(wxAccount, lastTime, command, retry);
+            return articles(wxAccount, command, retry);
         } else {
             throw `articles 获取失败: ${wxAccount.name} ${JSON.stringify(response.data)}`;
         }
