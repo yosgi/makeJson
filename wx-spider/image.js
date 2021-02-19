@@ -47,11 +47,14 @@ function sleep(ms) {
 async function setFeatureImg(article, articleTable, idx) {
     await sleep(10 * idx)
     const url = article.detailInfo.coverImgUrl;
-    const match = /mmbiz\.(?:[a-z]+)\.cn\/(?:[a-z_]*?)mmbiz_([a-z]+)\//.exec(url);
+    let match = /mmbiz\.(?:[a-z]+)\.cn\/(?:[a-z_]*?)mmbiz_([a-z]+)\//.exec(url);
     if (!match) {
-        log.error('匹配失败：' + url);
-        return;
+        match = /mmbiz\.(?:[a-z]+)\.cn\/(?:[a-z_]*?)mmbiz\/.*\?wx_fmt=([a-z]+)/.exec(url);
+        if (!match) {
+            throw '匹配失败：' + url;
+        }
     }
+
     while(1) {
         const fileName = `${(new Date().getTime()).toString(16)}`;
         const filePath = `${basePath}/${fileName}.${match[1]}`;

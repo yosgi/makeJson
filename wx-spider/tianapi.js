@@ -6,7 +6,6 @@ const log = require('./log');
 const moment = require('moment');
 
 let mdb = false;
-let configTable;
 
 const urls = {
     articles: 'http://api.tianapi.com/txapi/wxinfo/index',
@@ -18,7 +17,6 @@ function sleep(ms) {
 
 async function setMongo(mongodb) {
     mdb = mongodb;
-    configTable = await mdb.collection('config');
 }
 
 
@@ -72,15 +70,17 @@ async function articles(options, command, retry) {
         }
         return [hasNext, articles];
     } else {
-        if (page > 0 && response.data.code === 250) {
-            return [false, []];
-        }
-        if (response.data.code === 250) {
-            const apiActive = await checkActive();
-            if (apiActive) {
+        if (retry == 3) {// code 250 时重试两次
+            if (page > 0 && response.data.code === 250) {
                 return [false, []];
             }
-            retry = 0;
+            if (response.data.code === 250) {
+                const apiActive = await checkActive();
+                if (apiActive) {
+                    return [false, []];
+                }
+                retry = 0;
+            }
         }
         if (retry >= 1) {
             retry--;

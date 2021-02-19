@@ -136,7 +136,7 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
                 await Promise.all(addList);
             }
         }
-    } else if (config.spider.default == 'tianapi') {
+    } else if (config.spider.default == 'tianapi' || config.spider.default == 'sogou') {
         // use articles api
         console.log(wxAccount.name)
         const [hasNext, articles] = await sapi.articles({wxAccount}, command);
