@@ -88,7 +88,7 @@ async function articles(options, command, retry) {
             if (response.data.code === 130) {
                 await sleep(60000)
             } else {
-                await sleep(2000 * (5 - retry));
+                await sleep(30000 * (5 - retry));
             }
             return articles(options, command, retry);
         } else {
