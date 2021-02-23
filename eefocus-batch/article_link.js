@@ -8,6 +8,14 @@ const moment = require('moment');
 const articleDb = rds(config.db.eefocus_article);
 const limit = 10;
 
+function sleep(time = 0) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve();
+        }, time);
+    })
+}
+
 async function clean()
 {
     const articles = await articleDb.query(`select id,content from eef_article_article where id>=477454`)
@@ -192,6 +200,7 @@ async function addLink(links, action, lastNewId)
             } else {
                 maxId = articles[articles.length - 1].id
             }
+            await sleep(2000)
         }
     }
 }
