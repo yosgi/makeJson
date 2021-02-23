@@ -37,6 +37,7 @@ async function clean()
 
 async function getFromEs(keyword, maxId)
 {
+    const pSize = 30;
     const cond = {
         index: 'eefocus_search',
         body: {
@@ -68,7 +69,7 @@ async function getFromEs(keyword, maxId)
                     order: 'desc'
                 }
             },
-            size: limit
+            size: pSize
         }
     };
     //TODO for test
@@ -107,7 +108,7 @@ async function getFromEs(keyword, maxId)
     const ids = []
     const hits = res.data.data.body.hits.hits
     let articles = []
-    let hasNext = res.data.data.body.hits.total > limit
+    let hasNext = res.data.data.body.hits.total > pSize
     if (hits.length > 0) {
         hits.forEach(element => {
             const id = parseInt(element._source.id.split('_')[1])
@@ -169,7 +170,8 @@ async function addLink(links, action, lastNewId)
                     case 'news':
                         minId = article.id
                     case 'add':
-                        content = article.content.replace(addReg, `<a class="article-link" href="${linkRow.link}">${linkRow.term}</a>`)
+                        content = article.content.replace(exactReg, linkRow.term)
+                        content = content.replace(addReg, `<a class="article-link" href="${linkRow.link}">${linkRow.term}</a>`)
                         break;
                     case 'update':
                         content = article.content.replace(exactReg, `<a class="article-link" href="${linkRow.link}">${linkRow.term}</a>`)
@@ -200,7 +202,10 @@ async function addLink(links, action, lastNewId)
             } else {
                 maxId = articles[articles.length - 1].id
             }
-            await sleep(2000)
+            if (action == 'add') {
+                console.log(`add link processing - ${linkRow.term} ${maxId}`)
+            }
+            await sleep(500)
         }
     }
 }
