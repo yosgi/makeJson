@@ -36,8 +36,12 @@ async function articles(options, command, retry) {
         retry = 5
     }
     let hasNext = true;
+    const params = {'key': config.spider.tianapi.key, 'biz': wxAccount.biz, 'word': wxAccount.name}
+    if (page > 0) {
+        params.page = page
+    }
     const response = await axios.get(urls.articles, {
-        params: {'key': config.spider.tianapi.key, 'biz': wxAccount.biz, 'word': wxAccount.name, 'page': page}
+        params
     });
     if (response.data.code === 200) {
         if (command == 'test') {
