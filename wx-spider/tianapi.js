@@ -49,7 +49,9 @@ async function articles(options, command, retry) {
         }
         const result = response.data.newslist;
         let articles = []
+        let maxTime = 0
         if (result) {
+            maxTime = parseInt(moment(result[0].ctime).format('x') / 1000);
             for (let idx = 0; idx < result.length; idx++) {
                 const detailInfo = result[idx];
                 const detailTime = parseInt(moment(detailInfo.ctime).format('x') / 1000);
@@ -72,7 +74,7 @@ async function articles(options, command, retry) {
         if (!result || result.length == 0) {
             hasNext = false
         }
-        return [hasNext, articles];
+        return [hasNext, articles, maxTime];
     } else {
         if (retry == 3) {// code 250 时重试两次
             if (page > 0 && response.data.code === 250) {

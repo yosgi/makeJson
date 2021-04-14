@@ -88,7 +88,6 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
     if (!wxAccount.lastTime || wxAccount.lastTime == 0) {
         wxAccount.lastTime = parseInt(moment().subtract(1, 'days').startOf('day').format('x') / 1000);
     }
-
     let offset = 0;
     const curTime = parseInt(moment().format('x') / 1000);
     const start = moment().toISOString();
@@ -96,6 +95,7 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
         return;
     }
 
+    let maxTime = 0
     if (config.spider.default == 'tuotu') {
         // use history api
         try {
@@ -131,15 +131,19 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
             if (articles.length > 0) {
                 const addList = [];
                 articles.forEach(article => {
-                    addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
+                    addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.title": article.data.detailInfo.title, "dateTime": {$gt: wxAccount.lastTime}}))
                 });
                 await Promise.all(addList);
             }
         }
+        //TODO maxTime
+        maxTime = curTime
     } else if (config.spider.default == 'tianapi' || config.spider.default == 'sogou') {
         // use articles api
         console.log(wxAccount.name)
-        const [hasNext, articles] = await sapi.articles({wxAccount}, command);
+        const [hasNext, articles, articleMaxTime] = await sapi.articles({wxAccount}, command);
+        maxTime = articleMaxTime
+
         if (command == 'test') {
             return;
         }
@@ -147,16 +151,19 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
         if (articles.length > 0) {
             const addList = [];
             articles.forEach(article => {
-                addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.contentUrl": article.data.detailInfo.contentUrl}))
+                addList.push(addArticle(article, wxAccount, articleTable, {"detailInfo.title": article.data.detailInfo.title, "dateTime": {$gt: wxAccount.lastTime}}))
             });
             await Promise.all(addList);
         }
     }
-    await accountTable.updateOne({
-        userName: wxAccount.userName,
-    }, {
-        $set: { lastTime : curTime }
-    });
+
+    if (maxTime) {
+        await accountTable.updateOne({
+            userName: wxAccount.userName,
+        }, {
+            $set: { lastTime : maxTime }
+        });
+    }
 }
 
 async function addArticle(article, wxAccount, articleTable, existsWhere = null) {
