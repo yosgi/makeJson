@@ -104,7 +104,10 @@ async function articles(options, command, retry) {
 }
 
 async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
-    console.log(`get details...`)
+    console.log(`get details...`, detailInfo)
+    if (!detailInfo.contentUrl) {
+        return false;
+    }
     const detailRes = await axios.get(detailInfo.contentUrl, {
         // proxy: {
         //     host: '122.241.218.226',
