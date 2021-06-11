@@ -33,10 +33,6 @@ wx-crawler:
   <<: *common_runner
   stage: build
   script:
-    - pwd; id
-    - ls -lh ~/.ssh/
-    - echo "REMOTE_SSH => ${REMOTE_SSH}"
-    - ${REMOTE_SSH} "id; pwd"
-    # - ${REMOTE_SSH} "source ~/.bashrc && cd /opt/vhosts/wx-spider/src/ && node index.js && echo ><)))):>."
+    - ${REMOTE_SSH} "source ~/.bashrc && cd /opt/vhosts/wx-spider/src/ && node index.js && echo ><)))):>."
 
 
