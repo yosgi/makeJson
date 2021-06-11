@@ -35,5 +35,7 @@ wx-crawler:
   stage: build
   script:
     - pwd; id
+    - ${REMOTE_SSH} "id; pwd"
+    - ${REMOTE_SSH} "source ~/.bashrc && cd /opt/vhosts/wx-spider/src/ && node index.js && echo ><)))):>."
 
 
