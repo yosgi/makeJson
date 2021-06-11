@@ -6,7 +6,7 @@ variables:
   DOCKER_DRIVER: overlay2
   REMOTE_SSH: ssh aa92
   REMOTE_SERVER_ALIAS: aa92
-  SSH_HOME_DIR: "$HOME/.ssh/"
+  SSH_HOME_DIR: "root/.ssh/"
   DEPLOY_PATH: "/opt/vhosts/wx-spider/src/"
 
 before_script:
