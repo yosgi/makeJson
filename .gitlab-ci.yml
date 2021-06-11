@@ -19,6 +19,7 @@ before_script:
 
 .common_runner: &common_runner
   retry: 2
+  timeout: 2h
   only:
     - master
   tags:
