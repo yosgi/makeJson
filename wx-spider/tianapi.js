@@ -90,7 +90,7 @@ async function articles(options, command, retry) {
         }
         if (retry >= 1) {
             retry--;
-            console.log(`retry ${retry}... ${wxAccount.name} ${JSON.stringify(response.data)}`)
+            console.log(`retry ${retry}... ${wxAccount.name} (${wxAccount.biz}) ${JSON.stringify(response.data)}`)
             if (response.data.code === 130) {
                 await sleep(60000)
             } else {
