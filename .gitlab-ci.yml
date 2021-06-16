@@ -34,7 +34,8 @@ wx-crawler:
   <<: *common_runner
   stage: build
   script:
-    - msg=$(${REMOTE_SSH} "source ~/.bashrc && cd /opt/vhosts/wx-spider/src/ && node index.js && echo YESSSSSSSS")
+    - ${REMOTE_SSH} "source ~/.bashrc && cd /opt/vhosts/wx-spider/src/ && node index.js && echo YESSSSSSSS | tee ~/.run_result || echo Nooo | teee ~/.run_result"
+    - msg=$(${REMOTE_SSH} "cat ~/.run_result; rm -fv ~/.run_result")
     - if [[ $msg =~ "YESSSSSSSS" ]]; then echo "><)))):> *^_^*"; exit 0; else echo "FAILED T_T"; exit 250; fi
 
 
