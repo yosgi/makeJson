@@ -18,7 +18,7 @@ before_script:
 
 
 .common_runner: &common_runner
-  retry: 1
+  # retry: 1
   timeout: 2h
   only:
     - master
