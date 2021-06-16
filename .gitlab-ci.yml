@@ -35,6 +35,6 @@ wx-crawler:
   stage: build
   script:
     - msg=$(${REMOTE_SSH} "source ~/.bashrc && cd /opt/vhosts/wx-spider/src/ && node index.js && echo YESSSSSSSS")
-    - if [[ $msg =~ "YESSSSSSSS" ]]; then echo "><)))):> *^_^*"; else echo "FAILED T_T"; fi
+    - if [[ $msg =~ "YESSSSSSSS" ]]; then echo "><)))):> *^_^*"; exit 0; else echo "FAILED T_T"; exit 250; fi
 
 
