@@ -233,7 +233,7 @@ async function addArticle(article, wxAccount, articleTable, existsWhere = null) 
             }
         }
     });
-    addData.content = $('body').html();
+    addData.content = filterEmoji($('body').html());
     let match;
     const reg = /<(?:p|span)[^>]*>([^<]+?)<\//g;
     while ((match = reg.exec(article.content)) != null) {
@@ -245,6 +245,15 @@ async function addArticle(article, wxAccount, articleTable, existsWhere = null) 
     }
     const result = await db.insert('eef_article_draft', addData);
     await articleTable.insertOne({ ...article.data, articleId: result.insertId, wxAccountId: wxAccount._id});
+}
+
+function filterEmoji(str) {
+    const ranges = [
+        '\ud83c[\udf00-\udfff]',
+        '\ud83d[\udc00-\ude4f]',
+        '\ud83d[\ude80-\udeff]'
+    ];
+    return str.replace(new RegExp(ranges.join('|'), 'g'), '');
 }
 
 module.exports = {
