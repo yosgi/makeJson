@@ -90,7 +90,7 @@ async function articles(options, command, retry) {
         }
         if (retry >= 1) {
             retry--;
-            console.log(`retry ${retry}... ${wxAccount.name} ${JSON.stringify(response.data)}`)
+            console.log(`retry ${retry}... ${wxAccount.name} (${wxAccount.biz}) ${JSON.stringify(response.data)}`)
             if (response.data.code === 130) {
                 await sleep(60000)
             } else {
@@ -104,7 +104,10 @@ async function articles(options, command, retry) {
 }
 
 async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
-    console.log(`get details...`)
+    console.log(`get details...`, detailInfo)
+    if (!detailInfo.contentUrl) {
+        return false;
+    }
     const detailRes = await axios.get(detailInfo.contentUrl, {
         // proxy: {
         //     host: '122.241.218.226',
