@@ -136,7 +136,7 @@ async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
     }
 
     // 原创
-    if (html.indexOf('<span id="copyright_logo" class="rich_media_meta icon_appmsg_tag appmsg_title_tag">原创</span>') !== -1) {
+    if (/<span id="copyright_logo" class=".*?">原创<\/span>/.test(html)) {
         return {
             data: { baseInfo, detailInfo, dateTime: msgBaseInfo.dateTime },
             title: detailInfo.title,
