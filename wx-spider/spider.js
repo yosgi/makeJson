@@ -211,6 +211,9 @@ async function addArticle(article, wxAccount, articleTable, existsWhere = null) 
         allowedAttributes: {
             img: ['src']
         },
+        parser: {
+            decodeEntities: false
+        }
     });
     const $ = cheerio.load(content, {
         decodeEntities: false
