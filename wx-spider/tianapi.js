@@ -59,7 +59,7 @@ async function articles(options, command, retry) {
                     hasNext = false
                     break;
                 }
-                const detailData = await fetchDetail({
+                const detailData = await fetchDetail(wxAccount, {
                     contentUrl: detailInfo.url,
                     title: detailInfo.title,
                     coverImgUrl: detailInfo.picUrl,
@@ -103,7 +103,7 @@ async function articles(options, command, retry) {
     }
 }
 
-async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
+async function fetchDetail(wxAccount, detailInfo, baseInfo, msgBaseInfo) {
     console.log(`get details...`, detailInfo)
     if (!detailInfo.contentUrl) {
         return false;
@@ -136,7 +136,7 @@ async function fetchDetail(detailInfo, baseInfo, msgBaseInfo) {
     }
 
     // 原创
-    if (/<span id="copyright_logo" class=".*?">原创<\/span>/.test(html)) {
+    if (!wxAccount.checkOriginal || /<span id="copyright_logo" class=".*?">原创<\/span>/.test(html)) {
         return {
             data: { baseInfo, detailInfo, dateTime: msgBaseInfo.dateTime },
             title: detailInfo.title,
