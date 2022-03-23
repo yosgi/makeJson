@@ -121,7 +121,7 @@ async function fetchDetail(wxAccount, detailInfo, baseInfo, msgBaseInfo) {
     if (html.indexOf('访问过于频繁，请用微信扫描二维码进行访问') !== -1) {
         throw '微信访问过于频繁';
     }
-    const match = /<div class="rich_media_content " id="js_content" style="visibility: hidden;">[\s]+([\s\S]+?)[\s]+<\/div>[\s]+<script nonce/.exec(html);
+    const match = /<div class="rich_media_content " id="js_content" style="visibility: hidden;">[\s]+([\s\S]+?)[\s]+<\/div>[\s]+<script [^>]*nonce/.exec(html);
     if (!match) {
         if (html.indexOf('class="price js_pay_fee"') === -1 || html.indexOf('js_share_content') === -1) {
             // 付费阅读 分享文章
@@ -137,6 +137,7 @@ async function fetchDetail(wxAccount, detailInfo, baseInfo, msgBaseInfo) {
 
     // 原创
     if (!wxAccount.checkOriginal || /<span id="copyright_logo" class=".*?">原创<\/span>/.test(html)) {
+        console.log(`get details success...\n=====`, detailInfo.title)
         return {
             data: { baseInfo, detailInfo, dateTime: msgBaseInfo.dateTime },
             title: detailInfo.title,

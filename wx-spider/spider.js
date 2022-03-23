@@ -140,7 +140,7 @@ async function fetch(wxAccount, articleTable, accountTable, command) {
         maxTime = curTime
     } else if (config.spider.default == 'tianapi' || config.spider.default == 'sogou') {
         // use articles api
-        console.log(wxAccount.name)
+        console.log(`--------` + wxAccount.name + `--------`)
         const [hasNext, articles, articleMaxTime] = await sapi.articles({wxAccount}, command);
         maxTime = articleMaxTime
 
