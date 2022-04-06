@@ -106,7 +106,7 @@ async function articles(options, command, retry) {
 async function fetchDetail(wxAccount, detailInfo, baseInfo, msgBaseInfo) {
     console.log(`get details...`, detailInfo)
     if (!detailInfo.contentUrl) {
-        console.log(`detailInfo.contentUrl is empty!\n`)
+        console.log(`detailInfo.contentUrl is empty (⛔️️) !\n`)
         return false;
     }
     const detailRes = await axios.get(detailInfo.contentUrl, {
@@ -117,18 +117,18 @@ async function fetchDetail(wxAccount, detailInfo, baseInfo, msgBaseInfo) {
     });
     const html = detailRes.data;
     if (detailRes.status !== 200) {
-        console.log('获取详情失败: ' + detailInfo.title);
+        console.log('获取详情失败(⛔️️): ' + detailInfo.title);
     }
     if (html.indexOf('访问过于频繁，请用微信扫描二维码进行访问') !== -1) {
-        console.log('微信访问过于频繁: '+ detailInfo.contentUrl);
+        console.log('微信访问过于频繁(⛔️️): '+ detailInfo.contentUrl);
     }
     const match = /<div class="rich_media_content[^\"]*"\s+id="js_content" style="visibility: hidden;">[\s]+([\s\S]+?)[\s]+<\/div>[\s]+<script[^>]*nonce/.exec(html);
     if (!match) {
         if (html.indexOf('class="price js_pay_fee"') === -1 || html.indexOf('js_share_content') === -1) {
             // 付费阅读 分享文章
-            console.log('获取详情匹配有误: ' + detailInfo.title);
+            console.log('获取详情匹配有误(⛔️️): ' + detailInfo.title);
         }
-        console.log('详情匹配失败: ' + detailInfo.title);
+        console.log('详情匹配失败(⛔️️): ' + detailInfo.title);
         return false;
     }
 
@@ -139,7 +139,7 @@ async function fetchDetail(wxAccount, detailInfo, baseInfo, msgBaseInfo) {
 
     // 原创
     if (!wxAccount.checkOriginal || /<span id="copyright_logo" class=".*?">(Original|原创)<\/span>/.test(html)) {
-        console.log(`===== 原创文章抓取成功：`, detailInfo.title)
+        console.log(`=====（🉑️️️➕️） 原创文章抓取成功：`, detailInfo.title)
         return {
             data: { baseInfo, detailInfo, dateTime: msgBaseInfo.dateTime },
             title: detailInfo.title,
@@ -149,7 +149,7 @@ async function fetchDetail(wxAccount, detailInfo, baseInfo, msgBaseInfo) {
         };
     }
     else {
-        console.error(`文章非原创：`, detailInfo.title)
+        console.error(`文章非原创（⛔️️🙅🏻）：`, detailInfo.title)
     }
     return false;
 }
