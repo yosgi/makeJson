@@ -28,8 +28,12 @@ export default function Banner(props: any) {
         <ImageListItem>
           <img src={data.image} alt={data.main} />
           <ImageListItemBar
-            title={data.des}
-            subtitle={<span> {data.text}</span>}
+            title={data.main}
+            subtitle={
+              <span>
+                {data.des} - {data.text}
+              </span>
+            }
           />
         </ImageListItem>
       </ImageList>

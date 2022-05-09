@@ -21,21 +21,25 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-export default function BannerComponent(props) {
-  const { setDialog, addObj } = props;
+export default function BannerComponent(props: any) {
+  const { setDialog, addObj, editting, editObj, type } = props;
   const classes = useStyles();
-  const [forms, setForm] = useState({
-    image: "",
-    main: "",
-    des: "",
-    text: ""
-  });
+  const [forms, setForm] = useState(
+    editting
+      ? editting
+      : {
+          image: "",
+          main: "",
+          des: "",
+          text: ""
+        }
+  );
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
-    addObj("banner", formProps);
+    editting ? editObj(type, formProps) : addObj(type, formProps);
     setDialog(false);
   };
 
@@ -47,7 +51,12 @@ export default function BannerComponent(props) {
           {types.map((v) => {
             return (
               <FormControl key={v.key} className={classes.input}>
-                <TextField name={v.key} id="standard-basic" label={v.label} />
+                <TextField
+                  defaultValue={forms[v.key]}
+                  name={v.key}
+                  id="standard-basic"
+                  label={v.label}
+                />
               </FormControl>
             );
           })}

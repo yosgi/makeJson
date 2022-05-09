@@ -1,7 +1,8 @@
 export const menuList = [
-  { label: "列表", key: "List" },
   { label: "首图", key: "Banner" },
-  { label: "表格(todo)", key: "Table" },
+  { label: "图 - 文列表", key: "List" },
+  { label: "表格", key: "Table" },
+  { label: "图 - 链接列表(todo)", key: "List" },
   { label: "正文(todo)", key: "Article" }
 ];
 export const types = [

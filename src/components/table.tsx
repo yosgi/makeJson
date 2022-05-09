@@ -1,5 +1,5 @@
 import DialogTitle from "@material-ui/core/DialogTitle";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
 import FormControl from "@material-ui/core/FormControl";
@@ -21,46 +21,28 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-export default function ListComponent(props: any) {
+export default function TableComponent(props: any) {
   const { setDialog, addObj, editting, editObj, type } = props;
   const classes = useStyles();
   console.log(editting);
-  const attrMap = ["image", "main", "des", "text"];
-  const [forms, setForm] = useState(
-    editting
-      ? editting
-      : [
-          {
-            image: "",
-            main: "",
-            des: "",
-            text: ""
-          }
-        ]
-  );
+  const [forms, setForm] = useState(editting ? editting : [["", "", "", ""]]);
+  console.log(forms);
   const addRow = () => {
-    setForm([
-      ...forms,
-      {
-        image: "",
-        main: "",
-        des: "",
-        text: ""
-      }
-    ]);
+    setForm([...forms, ["", "", "", ""]]);
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
+    console.log(formProps);
     let index = 0;
     let res: any = [];
     for (let key in formProps) {
       if (!res[Math.floor(index / 4)]) {
-        res[Math.floor(index / 4)] = {};
+        res[Math.floor(index / 4)] = [];
       }
-      res[Math.floor(index / 4)][types[index % 4].key] = formProps[key];
+      res[Math.floor(index / 4)].push(formProps[key]);
       index++;
     }
     editting ? editObj(type, res) : addObj(type, res);
@@ -72,15 +54,14 @@ export default function ListComponent(props: any) {
       <DialogTitle>列表</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
-          {forms.map((form: any, index: number) => {
-            return attrMap.map((key, v) => {
+          {forms.map((form: any, i: number) => {
+            return form.map((v: string, j: number) => {
               return (
-                <FormControl key={index + "" + v} className={classes.input}>
+                <FormControl key={i + "-" + j} className={classes.input}>
                   <TextField
-                    name={"content" + index + "-" + v}
-                    defaultValue={form[key]}
-                    id="standard-basic"
-                    label={v + 1 + "." + types[v].label}
+                    name={i + "-" + j}
+                    defaultValue={v}
+                    label={i === 0 ? `表头第${j + 1}列` : `第${j + 1}列`}
                   />
                 </FormControl>
               );
