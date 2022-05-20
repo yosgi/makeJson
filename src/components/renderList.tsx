@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function AlignItemsList(props) {
+export default function AlignItemsList(props: any) {
   const classes = useStyles();
   const { data } = props;
   return (
@@ -38,14 +38,14 @@ export default function AlignItemsList(props) {
                 secondary={
                   <React.Fragment>
                     <Typography
-                      component="span"
+                      component="div"
                       variant="body2"
                       className={classes.inline}
                       color="textPrimary"
                     >
-                      {v.des + "-"}
+                      {v.des}
                     </Typography>
-                    {v.text}
+                    <div> {v.text}</div>
                   </React.Fragment>
                 }
               />

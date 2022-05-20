@@ -25,29 +25,15 @@ export default function ListComponent(props: any) {
   const { setDialog, addObj, editting, editObj, type } = props;
   const classes = useStyles();
   console.log(editting);
-  const attrMap = ["image", "main", "des", "text"];
-  const [forms, setForm] = useState(
-    editting
-      ? editting
-      : [
-          {
-            image: "",
-            main: "",
-            des: "",
-            text: ""
-          }
-        ]
-  );
+  const attrMap = [];
+  const attrs = {};
+  types.forEach((v: any) => {
+    attrs[v.key] = "";
+    attrMap.push(v.key);
+  });
+  const [forms, setForm] = useState(editting ? editting : [attrs]);
   const addRow = () => {
-    setForm([
-      ...forms,
-      {
-        image: "",
-        main: "",
-        des: "",
-        text: ""
-      }
-    ]);
+    setForm([...forms, attrs]);
   };
 
   const handleSubmit = (e: any) => {
@@ -57,10 +43,12 @@ export default function ListComponent(props: any) {
     let index = 0;
     let res: any = [];
     for (let key in formProps) {
-      if (!res[Math.floor(index / 4)]) {
-        res[Math.floor(index / 4)] = {};
+      if (!res[Math.floor(index / attrMap.length)]) {
+        res[Math.floor(index / attrMap.length)] = {};
       }
-      res[Math.floor(index / 4)][types[index % 4].key] = formProps[key];
+      res[Math.floor(index / attrMap.length)][
+        types[index % attrMap.length].key
+      ] = formProps[key];
       index++;
     }
     editting ? editObj(type, res) : addObj(type, res);
@@ -69,7 +57,7 @@ export default function ListComponent(props: any) {
 
   return (
     <div>
-      <DialogTitle>列表</DialogTitle>
+      <DialogTitle>图文列表</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           {forms.map((form: any, index: number) => {

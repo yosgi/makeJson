@@ -11,11 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     input: {
       display: "none"
-    },
-    uploadButton: {
-      position: "fixed",
-      top: 70,
-      right: 30
     }
   })
 );
@@ -24,7 +19,6 @@ export default function UploadButtons(props: any) {
   const { setObj } = props;
   const classes = useStyles();
   const handleChange = (event: any) => {
-    console.log(111);
     var reader = new FileReader();
     console.log(event.target.files[0]);
     reader.onload = function (event) {
@@ -47,12 +41,7 @@ export default function UploadButtons(props: any) {
         type="file"
       />
       <label htmlFor="contained-button-file">
-        <Button
-          className={classes.uploadButton}
-          variant="contained"
-          color="primary"
-          component="span"
-        >
+        <Button {...props} variant="contained" color="primary" component="span">
           导入JSON
         </Button>
       </label>

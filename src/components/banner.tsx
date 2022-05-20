@@ -9,11 +9,8 @@ import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { types } from "../data";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    select: {
-      width: 60
-    },
     input: {
-      width: 100,
+      width: "100%",
       marginLeft: 10
     },
     button: {
@@ -45,18 +42,22 @@ export default function BannerComponent(props: any) {
 
   return (
     <div>
-      <DialogTitle>主图</DialogTitle>
+      <DialogTitle>主图，或者文章+ 主图模块</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           {types.map((v) => {
             return (
               <FormControl key={v.key} className={classes.input}>
-                <TextField
-                  defaultValue={forms[v.key]}
-                  name={v.key}
-                  id="standard-basic"
-                  label={v.label}
-                />
+                <div>
+                  <TextField
+                    fullWidth
+                    multiline
+                    defaultValue={forms[v.key]}
+                    name={v.key}
+                    id="standard-basic"
+                    label={v.label}
+                  />
+                </div>
               </FormControl>
             );
           })}

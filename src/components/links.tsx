@@ -1,12 +1,12 @@
 import DialogTitle from "@material-ui/core/DialogTitle";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
 import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
 import DialogContent from "@material-ui/core/DialogContent";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import { tableColumCont } from "../data";
+import { linkTypes } from "../data";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     select: {
@@ -21,30 +21,46 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 );
-export default function TableComponent(props: any) {
+export default function ListComponent(props: any) {
   const { setDialog, addObj, editting, editObj, type } = props;
   const classes = useStyles();
   console.log(editting);
+  const attrMap = ["image", "main", "des", "text"];
   const [forms, setForm] = useState(
-    editting ? editting : [new Array(tableColumCont).fill("")]
+    editting
+      ? editting
+      : [
+          {
+            image: "",
+            main: "",
+            des: "",
+            text: ""
+          }
+        ]
   );
-  console.log(forms);
   const addRow = () => {
-    setForm([...forms, [new Array(tableColumCont).fill("")]]);
+    setForm([
+      ...forms,
+      {
+        image: "",
+        main: "",
+        des: "",
+        text: ""
+      }
+    ]);
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
-    console.log(formProps);
     let index = 0;
     let res: any = [];
     for (let key in formProps) {
-      if (!res[Math.floor(index / tableColumCont)]) {
-        res[Math.floor(index / tableColumCont)] = [];
+      if (!res[Math.floor(index / 4)]) {
+        res[Math.floor(index / 4)] = {};
       }
-      res[Math.floor(index / tableColumCont)].push(formProps[key]);
+      res[Math.floor(index / 4)][linkTypes[index % 4].key] = formProps[key];
       index++;
     }
     editting ? editObj(type, res) : addObj(type, res);
@@ -53,17 +69,18 @@ export default function TableComponent(props: any) {
 
   return (
     <div>
-      <DialogTitle>表格模块</DialogTitle>
+      <DialogTitle>图文链接列表</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
-          {forms.map((form: any, i: number) => {
-            return form.map((v: string, j: number) => {
+          {forms.map((form: any, index: number) => {
+            return attrMap.map((key, v) => {
               return (
-                <FormControl key={i + "-" + j} className={classes.input}>
+                <FormControl key={index + "" + v} className={classes.input}>
                   <TextField
-                    name={i + "-" + j}
-                    defaultValue={v}
-                    label={i === 0 ? `表头第${j + 1}列` : `第${j + 1}列`}
+                    name={"content" + index + "-" + v}
+                    defaultValue={form[key]}
+                    id="standard-basic"
+                    label={v + 1 + "." + linkTypes[v].label}
                   />
                 </FormControl>
               );
