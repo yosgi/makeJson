@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eefads-deployment
+  namespace: eefocus-tech
+  labels:
+    run: eefads
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: eefads
+  template:
+    metadata:
+      labels:
+        run: eefads
+    spec:
+      # nodeSelector:
+      #   zone: pe1950
+      containers:
+      - name: eefads
+        image: h.eefocus.tech/apps/eef-ads-sys:latest
+        resources:
+          requests:
+            cpu: 200m
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+          - 192.168.0.53
+        searches:
+          - 192.168.0.53
+      #imagePullSecrets:
+#      - name: heefocustech
+      restartPolicy: Always
