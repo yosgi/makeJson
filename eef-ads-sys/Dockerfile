@@ -5,4 +5,4 @@ COPY dist/* /opt/vhosts/adssys.eefocus.tech/
 
 WORKDIR /opt/vhosts/adssys.eefocus.tech/
 
-EXPOSE 80
+EXPOSE 8080
