@@ -1,13 +1,14 @@
 {
     "include": [
-        "./src/**/*"
+        // "./src/**/*"
     ],
     "compilerOptions": {
-        "strict": true,
+        "strict": false,
         "esModuleInterop": true,
         "lib": [
             "dom",
-            "es2015"
+            "es2020",
+            "dom.iterable"
         ],
         "jsx": "react-jsx"
     }

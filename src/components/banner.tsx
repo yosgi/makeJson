@@ -7,6 +7,9 @@ import TextField from "@material-ui/core/TextField";
 import DialogContent from "@material-ui/core/DialogContent";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import { types } from "../data";
+interface FormData {
+  fromEntries(): string[]
+}
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     input: {
@@ -35,7 +38,7 @@ export default function BannerComponent(props: any) {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const formProps = Object.fromEntries(formData);
+    const formProps = formData.fromEntries(formData);
     editting ? editObj(type, formProps) : addObj(type, formProps);
     setDialog(false);
   };

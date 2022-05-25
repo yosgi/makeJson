@@ -80,6 +80,7 @@ const useStyles = makeStyles((theme: Theme) =>
     App: {
       paddingTop: 50,
       width: 700,
+      height:800,
       margin: "auto"
     },
     card: {
@@ -221,7 +222,7 @@ export default function App() {
         </List>
       </Drawer>
       <Dialog open={showDialog} maxWidth={false}>
-        <Box className={classes.dialog}>
+        <div className={classes.dialog}>
           <ComponentInModal
             editting={editting}
             type={current}
@@ -229,7 +230,7 @@ export default function App() {
             setDialog={setDialog}
             editObj={editObj}
           ></ComponentInModal>
-        </Box>
+        </div>
       </Dialog>
     </div>
   );
