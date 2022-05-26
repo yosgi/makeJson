@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>公众号最新热门文章</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      a {
+        color: rgb(20, 20, 20);
+      }
+      a:hover {
+        color: #1458d4;
+      }
+    </style>
+  </head>
+  <body>
+    <table cellspacing="0" cellpadding="0" style="width: 100%; min-width: 345px; max-width: 600px; padding-top: 30px; padding-left: 15px; padding-right: 15px; background: rgb(255, 255, 255); font-family: PingFangSC-Regular; margin: 0px auto;">
+      <tr style="width: 100%; min-width: 345px; max-width: 600px">
+        <td style="width: 100%; min-width: 345px; max-width: 600px">
+          <table cellspacing="0" cellpadding="0" style="width: 100%; min-width: 345px; max-width: 600px" >
+            <tr style="width: 100%; min-width: 345px; max-width: 600px">
+              <td style="min-width: 256px">
+                <span style="vertical-align: bottom; font-weight: 400; font-size: 28px;">
+                  <span style="font-weight: 700; vertical-align: bottom">公众号最新热门文章</span>
+                </span>
+              </td>
+              <td style="text-align: right">
+                <div>{{ day }}</div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr style="width: 100%; min-width: 345px; max-width: 600px; height: 46px">
+        <td style="width: 100%; min-width: 345px; max-width: 600px; height: 46px"></td>
+      </tr>
+      {% for table_data in dict_table_data %}
+      <tr style="width: 100%; min-width: 345px; max-width: 600px">
+        <td style="width: 100%; min-width: 345px; max-width: 600px">
+          <table cellspacing="0" cellpadding="0" style="width: 100%; min-width: 345px; max-width: 600px; margin-bottom: 10px; overflow: hidden;">
+            <tr style="width: 100%; min-width: 345px; max-width: 600px">
+              <td colspan="2" style="width: 100%; min-width: 345px; max-width: 600px; color: rgb(156, 161, 169); font-size: 24px; font-weight: 600; line-height: 24px; overflow: hidden;">
+                {{ table_data.Name }}
+                <span style="font-size: 15px; display: inline-block; margin-left: 1px; font-weight: normal; line-height: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                </span>
+              </td>
+            </tr>
+            <tr style="width: 100%; min-width: 345px; max-width: 600px; height: 30px;">
+              <td>
+                <div style="width: 100%; min-width: 345px; max-width: 600px; border-top: 1px solid rgb(240, 240, 240);"></div>
+              </td>
+            </tr>
+            {% for item in table_data.data %}
+            <tr style="width: 100%; min-width: 345px; max-width: 600px">
+              <td style="width: 100%; min-width: 345px; max-width: 600px">
+                <table cellspacing="0" cellpadding="0" style="width: 100%; min-width: 345px; max-width: 600px; margin-bottom: 10px; overflow: hidden;">
+                  <tr style="width: 100%; min-width: 345px; max-width: 600px; max-height: 43px; margin-bottom: 4px; overflow: hidden; font-size: 16px; color: rgb(20, 20, 20); word-break: break-all; line-height: 1.667; font-weight: 700;">
+                    <td colspan="2" style="width: 100%; min-width: 345px; max-width: 600px; min-height: 32px; text-align: justify;">
+                      <a href={{ item.url }}" target="_blank" style="text-decoration: none; ">
+                        {% if item.original %}
+                        <font color="red">&trade;</font>
+                        {% endif %}
+                        {{ item.name }}
+                      </a>
+                    </td>
+                  </tr>
+                  <tr style="width: 100%; min-width: 345px; max-width: 600px; height: 32px; overflow: hidden; line-height: 1.667; font-size: 14px; color: rgb(130, 138, 146);">
+                    <td style="width: 60%;">{{ item.pubtime }} 发布</td>
+                    <td style="width: 40%; text-align: right;">{{ item.read }} 阅读</td>
+                  </tr>
+                </table>
+              </td>
+              {% endfor %}
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr style="width: 100%; min-width: 345px; max-width: 600px; height: 25px;">
+        <td style="width: 100%; min-width: 345px; max-width: 600px; height: 25px;"></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
