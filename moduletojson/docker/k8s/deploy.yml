@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eefm2j-deployment
+  namespace: eefocus-tech
+  labels:
+    run: eefm2j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: eefm2j
+  template:
+    metadata:
+      labels:
+        run: eefm2j
+    spec:
+      containers:
+      - name: eefm2j
+        image: h.eefocus.tech/apps/module2json:latest
+        resources:
+          requests:
+            cpu: 200m
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8080
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+          - 192.168.0.53
+        searches:
+          - 192.168.0.53
+      #imagePullSecrets:
+#      - name: heefocustech
+      restartPolicy: Always

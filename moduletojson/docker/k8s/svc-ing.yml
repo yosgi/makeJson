@@ -1,0 +1,43 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eefm2j-svc
+  namespace: eefocus-tech
+  labels:
+    run: eefm2j
+spec:
+  type: ClusterIP
+  selector:
+    run: eefm2j
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: eefm2j-ingress
+  namespace: eefocus-tech
+  annotations:
+    ingress.kubernetes.io/balance-algorithm: roundrobin
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/timeout-server: "30m"
+    # session affinity settings below
+    ingress.kubernetes.io/affinity: "cookie"
+    ingress.kubernetes.io/session-cookie-name: "K8SHAPROXYCOOKIE"
+    ingress.kubernetes.io/session-cookie-preserve: "true"
+spec:
+  tls:
+  - hosts:
+    - eefm2j.eefocus.tech
+    secretName: tls-eefocus-tech
+  rules:
+  - host: eefm2j.eefocus.tech
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: eefm2j-svc
+          servicePort: 8080
