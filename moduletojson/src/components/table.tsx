@@ -6,7 +6,7 @@ import FormControl from "@material-ui/core/FormControl";
 import TextField from "@material-ui/core/TextField";
 import DialogContent from "@material-ui/core/DialogContent";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import { types } from "../data";
+import { tableColumCont } from "../data";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     select: {
@@ -25,10 +25,12 @@ export default function TableComponent(props: any) {
   const { setDialog, addObj, editting, editObj, type } = props;
   const classes = useStyles();
   console.log(editting);
-  const [forms, setForm] = useState(editting ? editting : [["", "", "", ""]]);
+  const [forms, setForm] = useState(
+    editting ? editting : [new Array(tableColumCont).fill("")]
+  );
   console.log(forms);
   const addRow = () => {
-    setForm([...forms, ["", "", "", ""]]);
+    setForm([...forms, [new Array(tableColumCont).fill("")]]);
   };
 
   const handleSubmit = (e: any) => {
@@ -39,10 +41,10 @@ export default function TableComponent(props: any) {
     let index = 0;
     let res: any = [];
     for (let key in formProps) {
-      if (!res[Math.floor(index / 4)]) {
-        res[Math.floor(index / 4)] = [];
+      if (!res[Math.floor(index / tableColumCont)]) {
+        res[Math.floor(index / tableColumCont)] = [];
       }
-      res[Math.floor(index / 4)].push(formProps[key]);
+      res[Math.floor(index / tableColumCont)].push(formProps[key]);
       index++;
     }
     editting ? editObj(type, res) : addObj(type, res);

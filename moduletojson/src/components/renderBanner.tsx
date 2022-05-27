@@ -31,7 +31,8 @@ export default function Banner(props: any) {
             title={data.main}
             subtitle={
               <span>
-                {data.des} - {data.text}
+                {data.des} {data.des && data.text ? "-" : ""}
+                {data.text}
               </span>
             }
           />

@@ -20,9 +20,8 @@ export default function UploadButtons(props: any) {
   const classes = useStyles();
   const handleChange = (event: any) => {
     var reader = new FileReader();
-    console.log(event.target.files[0]);
     reader.onload = function (event) {
-      var jsonObj = JSON.parse(event.target.result);
+      var jsonObj = JSON.parse(event.target.result +'');
       setObj(jsonObj);
     };
     if (event.target.files[0]) {

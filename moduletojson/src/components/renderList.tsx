@@ -38,14 +38,14 @@ export default function AlignItemsList(props: any) {
                 secondary={
                   <React.Fragment>
                     <Typography
-                      component="span"
+                      component="div"
                       variant="body2"
                       className={classes.inline}
                       color="textPrimary"
                     >
-                      {v.des + "-"}
+                      {v.des}
                     </Typography>
-                    {v.text}
+                    <div> {v.text}</div>
                   </React.Fragment>
                 }
               />

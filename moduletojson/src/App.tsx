@@ -40,7 +40,7 @@ const ComponentInModal = function (props: any) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dialog: {
-      width: 500
+      width: 750
     },
 
     imageList: {
@@ -80,6 +80,7 @@ const useStyles = makeStyles((theme: Theme) =>
     App: {
       paddingTop: 50,
       width: 700,
+      height:800,
       margin: "auto"
     },
     card: {
@@ -220,8 +221,8 @@ export default function App() {
           ))}
         </List>
       </Drawer>
-      <Dialog open={showDialog}>
-        <Box className={classes.dialog}>
+      <Dialog open={showDialog} maxWidth={false}>
+        <div className={classes.dialog}>
           <ComponentInModal
             editting={editting}
             type={current}
@@ -229,7 +230,7 @@ export default function App() {
             setDialog={setDialog}
             editObj={editObj}
           ></ComponentInModal>
-        </Box>
+        </div>
       </Dialog>
     </div>
   );
