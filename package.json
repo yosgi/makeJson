@@ -67,15 +67,23 @@
     "typescript": "4.4.2"
   },
   "scripts": {
+<<<<<<< HEAD
     "start": "SX_COMPILE_ON_ERROR=true ESLINT_NO_DEV_ERRORS=true react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "node scripts/test.js --env=jsdom"
+=======
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+>>>>>>> 2abc8f5893da4dae5de73ace4d1a8caf8071dfdd
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
+<<<<<<< HEAD
   ],
   "jest": {
     "roots": [
@@ -135,3 +143,7 @@
     "extends": "react-app"
   }
 }
+=======
+  ]
+}
+>>>>>>> 2abc8f5893da4dae5de73ace4d1a8caf8071dfdd
